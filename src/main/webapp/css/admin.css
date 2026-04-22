@@ -1,0 +1,48 @@
+/* Admin CSS */
+:root {
+  --admin-bg: #f4f6f8;
+  --sidebar-bg: #111;
+  --sidebar-color: #fff;
+  --primary: #000;
+  --border: #eaedf1;
+  --text: #333;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
+body { background: var(--admin-bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
+
+/* Sidebar */
+.sidebar { width: 250px; background: var(--sidebar-bg); color: var(--sidebar-color); display: flex; flex-direction: column; }
+.sidebar-logo { padding: 24px; font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 600; text-align: center; border-bottom: 1px solid #333; }
+.sidebar-nav { flex: 1; padding: 20px 0; }
+.sidebar-nav a { display: block; padding: 16px 24px; color: #aaa; text-decoration: none; font-size: 13px; letter-spacing: 0.05em; transition: 0.2s; }
+.sidebar-nav a:hover, .sidebar-nav a.active { color: #fff; background: #222; }
+.sidebar-footer { padding: 20px; font-size: 12px; text-align: center; color: #666; border-top: 1px solid #333;}
+
+/* Main Content */
+.main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.header { height: 70px; background: #fff; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; }
+.header-title { font-size: 18px; font-weight: 500; }
+.header-user { font-size: 13px; font-weight: 500; }
+
+.content-scroll { flex: 1; overflow-y: auto; padding: 40px; }
+
+/* Dashboard Cards */
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 40px; }
+.stat-card { background: #fff; padding: 24px; border-radius: 8px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+.stat-title { font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; }
+.stat-value { font-size: 32px; font-weight: 400; }
+
+/* Tables */
+.table-container { background: #fff; border-radius: 8px; border: 1px solid var(--border); overflow: hidden; }
+.table-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+.table-header h3 { font-size: 16px; font-weight: 500; }
+.btn-primary { background: var(--primary); color: #fff; border: none; padding: 10px 16px; font-size: 12px; border-radius: 4px; cursor: pointer; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 16px 24px; text-align: left; font-size: 13px; border-bottom: 1px solid var(--border); }
+th { background: #fafafa; font-weight: 600; color: #555; text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; }
+td img { width: 40px; height: 40px; object-fit: cover; border-radius: 4px; vertical-align: middle; margin-right: 12px; }
+.status { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; }
+.status.pending { background: #fff3cd; color: #856404; }
+.status.shipped { background: #d4edda; color: #155724; }
+.actions button { background: none; border: none; cursor: pointer; color: #0066cc; font-size: 13px; margin-right: 12px; }
+.actions button.delete { color: #dc3545; }

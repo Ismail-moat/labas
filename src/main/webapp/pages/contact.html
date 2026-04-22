@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact Us - Labas.</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <nav class="navbar" id="navbar">
+      <div class="nav-logo"><a href="../index.html">labas.</a></div>
+      <ul class="nav-links">
+        <li><a href="catalog.html">SHOP</a></li>
+        <li><a href="catalog.html?cat=women">WOMEN</a></li>
+        <li><a href="catalog.html?cat=men">MEN</a></li>
+      </ul>
+      <div class="nav-icons">
+        <span class="nav-icon" onclick="toggleSearch()">🔍 SEARCH</span>
+        <span class="nav-icon"><a href="cart.html">🛒 (<span id="cart-count">0</span>)</a></span>
+        <span class="nav-icon"><a href="login.jsp">👤 LOGIN</a></span>
+      </div>
+    </nav>
+    <section class="page-section wide">
+      <h2>CONTACT US</h2>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; text-align: left;">
+        <div>
+          <form class="contact-form" onsubmit="event.preventDefault(); alert('Message sent!');">
+            <input type="text" placeholder="Your Name" required />
+            <input type="email" placeholder="Your Email" required />
+            <input type="text" placeholder="Subject" required />
+            <textarea placeholder="Your Message..." rows="5" required></textarea>
+            <button type="submit">SEND MESSAGE</button>
+          </form>
+        </div>
+        <div>
+          <h3 style="font-size: 16px; margin-bottom: 12px; font-weight: 500;">Get in Touch</h3>
+          <p style="font-size: 13px; color: #555; line-height: 1.6; margin-bottom: 24px;">Have any questions or concerns? We're always ready to help!</p>
+          <p style="font-size: 13px; margin-bottom: 12px;"><strong>Email:</strong> <a href="mailto:hello@labas.com" style="color:var(--black);">hello@labas.com</a></p>
+          <p style="font-size: 13px; margin-bottom: 12px;"><strong>Phone:</strong> +212 600 000 000</p>
+          <p style="font-size: 13px; margin-bottom: 12px;"><strong>Hours:</strong> Mon - Fri, 9am - 6pm</p>
+        </div>
+      </div>
+    </section>
+    <script src="../js/app.js"></script>
+  </body>
+</html>

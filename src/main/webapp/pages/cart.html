@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Labas. — Cart</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <nav class="navbar" id="navbar">
+      <div class="nav-logo"><a href="../index.html">labas.</a></div>
+      <ul class="nav-links">
+        <li><a href="catalog.html">SHOP</a></li>
+        <li><a href="catalog.html?cat=women">WOMEN</a></li>
+        <li><a href="catalog.html?cat=men">MEN</a></li>
+        <li><a href="#">SALE</a></li>
+      </ul>
+      <div class="nav-icons">
+        <span class="nav-icon"
+          ><a href="cart.html" class="active">🛒 (<span id="cart-count">0</span>)</a></span
+        >
+      </div>
+    </nav>
+
+    <div class="breadcrumb"><a href="../index.html">Home</a> / <span>Shopping Cart</span></div>
+
+    <section class="cart-section">
+      <h1 class="page-title">YOUR CART</h1>
+
+      -- STEPS INDICATOR
+
+      <div class="steps">
+        <div class="step active"><span>1</span> CART</div>
+        <div class="step-divider"></div>
+        <div class="step"><span>2</span> CHECKOUT</div>
+        <div class="step-divider"></div>
+        <div class="step"><span>3</span> CONFIRMATION</div>
+      </div>
+
+      <div class="cart-layout">
+        <div class="cart-items" id="cartItemsContainer"></div>
+
+        <div class="cart-summary">
+          <h3>ORDER SUMMARY</h3>
+          <div class="summary-row"><span>Subtotal</span><span id="subtotal">$0.00</span></div>
+          <div class="summary-row"><span>Shipping</span><span>Free</span></div>
+          <div class="summary-row"><span>Discount</span><span id="discount">—</span></div>
+          <div class="promo-box">
+            <input type="text" placeholder="Promo code" id="promoInput" />
+            <button onclick="applyPromo()">APPLY</button>
+          </div>
+          <div class="divider"></div>
+          <div class="summary-row total"><span>TOTAL</span><span id="total">$0.00</span></div>
+          <a
+            href="checkout.html"
+            class="btn-add-cart"
+            style="display: block; text-align: center; text-decoration: none; margin-top: 20px"
+            >PROCEED TO CHECKOUT</a
+          >
+          <a href="catalog.html" class="continue-link">← Continue Shopping</a>
+        </div>
+      </div>
+
+      <div class="empty-cart" id="emptyCart" style="display: none">
+        <p>Your cart is empty.</p>
+        <a href="catalog.html" class="btn-outline dark">START SHOPPING</a>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        <div class="footer-logo">labas.</div>
+        <div class="footer-col">
+          <a href="about.html">ABOUT</a><a href="catalog.html">SHOP</a><a href="#">SALE</a>
+        </div>
+        <div class="footer-col">
+          <a href="#">TRACK ORDER</a><a href="#">RETURN POLICY</a><a href="#">SHIPPING</a>
+        </div>
+        <div class="footer-col">
+          <a href="#">INSTAGRAM</a><a href="#">TIKTOK</a><a href="#">PINTEREST</a>
+        </div>
+        <div class="footer-col contact-col"><p>hello@labas.com</p></div>
+      </div>
+      <div class="footer-bottom">© 2025 Labas. All rights reserved.</div>
+    </footer>
+
+    <script src="../js/app.js"></script>
+    <script>
+      const PRODUCTS = {
+        1: { name: "OVERSIZED T-SHIRT", price: 22, img: "p1" },
+        2: { name: "LEATHER OVERCOAT", price: 89, img: "p2" },
+        3: { name: "THE HUNDRED HOODY", price: 45, img: "p3" },
+        4: { name: "WIDE LEG TROUSERS", price: 55, img: "p4" },
+        5: { name: "MINIMAL BLAZER", price: 110, img: "p5" },
+        6: { name: "CROPPED JACKET", price: 78, img: "p6" },
+        7: { name: "RIBBED KNIT TOP", price: 34, img: "p1" },
+        8: { name: "TAILORED TRENCH", price: 145, img: "p2" },
+      };
+
+      function renderCart() {
+        const cart = JSON.parse(localStorage.getItem("labas_cart") || "{}");
+        const container = document.getElementById("cartItemsContainer");
+        const empty = document.getElementById("emptyCart");
+        const keys = Object.keys(cart);
+
+        if (keys.length === 0) {
+          container.style.display = "none";
+          document.querySelector(".cart-summary").style.display = "none";
+          empty.style.display = "flex";
+          return;
+        }
+
+        let html = "";
+        let subtotal = 0;
+        keys.forEach((id) => {
+          const p = PRODUCTS[id];
+          const qty = cart[id];
+          if (!p) return;
+          subtotal += p.price * qty;
+          html += `
+      <div class="cart-item">
+        <div class="cart-item-img ${p.img}"></div>
+        <div class="cart-item-details">
+          <p class="cart-item-name">${p.name}</p>
+          <p class="cart-item-sub">Size: M &nbsp;|&nbsp; Color: Black</p>
+          <div class="qty-control small">
+            <button onclick="updateCart(${id}, -1)">−</button>
+            <span>${qty}</span>
+            <button onclick="updateCart(${id}, 1)">+</button>
+          </div>
+        </div>
+        <div class="cart-item-price">
+          <span>$${(p.price * qty).toFixed(2)}</span>
+          <button class="remove-btn" onclick="removeFromCart(${id})">✕</button>
+        </div>
+      </div>`;
+        });
+
+        container.innerHTML = html;
+        document.getElementById("subtotal").textContent = "$" + subtotal.toFixed(2);
+        document.getElementById("total").textContent = "$" + subtotal.toFixed(2);
+      }
+
+      function updateCart(id, d) {
+        const cart = JSON.parse(localStorage.getItem("labas_cart") || "{}");
+        cart[id] = (cart[id] || 0) + d;
+        if (cart[id] <= 0) delete cart[id];
+        localStorage.setItem("labas_cart", JSON.stringify(cart));
+        renderCart();
+        updateCartCount();
+      }
+
+      function removeFromCart(id) {
+        const cart = JSON.parse(localStorage.getItem("labas_cart") || "{}");
+        delete cart[id];
+        localStorage.setItem("labas_cart", JSON.stringify(cart));
+        renderCart();
+        updateCartCount();
+      }
+
+      function applyPromo() {
+        const code = document.getElementById("promoInput").value.trim().toUpperCase();
+        if (code === "LABAS10") {
+          document.getElementById("discount").textContent = "-10%";
+          const sub = parseFloat(document.getElementById("subtotal").textContent.replace("$", ""));
+          document.getElementById("total").textContent = "$" + (sub * 0.9).toFixed(2);
+          document.getElementById("promoInput").style.borderColor = "green";
+        } else {
+          document.getElementById("promoInput").style.borderColor = "red";
+        }
+      }
+
+      renderCart();
+    </script>
+  </body>
+</html>

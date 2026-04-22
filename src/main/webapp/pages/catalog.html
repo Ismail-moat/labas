@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Labas. — Shop</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <nav class="navbar" id="navbar">
+      <div class="nav-logo"><a href="../index.html">labas.</a></div>
+      <ul class="nav-links">
+        <li><a href="catalog.html" class="active">SHOP</a></li>
+        <li><a href="catalog.html?cat=women">WOMEN</a></li>
+        <li><a href="catalog.html?cat=men">MEN</a></li>
+        <li><a href="#">SALE</a></li>
+        <li><a href="#">ARTICLES</a></li>
+      </ul>
+      <div class="nav-icons">
+        <span class="nav-icon" onclick="toggleSearch()">🔍 SEARCH</span>
+        <span class="nav-icon"
+          ><a href="cart.html">🛒 (<span id="cart-count">0</span>)</a></span
+        >
+        <span class="nav-icon">👤 LOGIN</span>
+      </div>
+    </nav>
+
+    <div class="search-overlay" id="searchOverlay">
+      <div class="search-inner">
+        <input type="text" placeholder="Search for products..." id="searchInput" />
+        <button onclick="toggleSearch()">✕</button>
+      </div>
+    </div>
+
+    <!-- PAGE HERO -->
+    <div class="page-hero">
+      <h1 class="page-hero-title">SHOP ALL</h1>
+    </div>
+    ]
+    <div class="catalog-layout">
+      <!-- SIDEBAR FILTERS -->
+      <aside class="filters">
+        <div class="filter-group">
+          <h4>CATEGORY</h4>
+          <label><input type="checkbox" checked /> All</label>
+          <label><input type="checkbox" /> Women</label>
+          <label><input type="checkbox" /> Men</label>
+          <label><input type="checkbox" /> Accessories</label>
+          <label><input type="checkbox" /> Sale</label>
+        </div>
+        <div class="filter-group">
+          <h4>SIZE</h4>
+          <div class="size-grid">
+            <span class="size-btn active">XS</span>
+            <span class="size-btn">S</span>
+            <span class="size-btn">M</span>
+            <span class="size-btn">L</span>
+            <span class="size-btn">XL</span>
+            <span class="size-btn">XXL</span>
+          </div>
+        </div>
+        <div class="filter-group">
+          <h4>PRICE RANGE</h4>
+          <input
+            type="range"
+            min="0"
+            max="300"
+            value="150"
+            class="price-range"
+            id="priceRange"
+            oninput="updatePrice(this.value)"
+          />
+          <span class="price-label">Up to $<span id="priceVal">150</span></span>
+        </div>
+        <div class="filter-group">
+          <h4>COLOR</h4>
+          <div class="color-swatches">
+            <span class="swatch black active" title="Black"></span>
+            <span class="swatch white" title="White"></span>
+            <span class="swatch grey" title="Grey"></span>
+            <span class="swatch beige" title="Beige"></span>
+            <span class="swatch navy" title="Navy"></span>
+          </div>
+        </div>
+      </aside>
+
+      --products grid
+      <div class="catalog-main">
+        <div class="catalog-toolbar">
+          <span class="catalog-count">Showing 12 products</span>
+          <select class="sort-select">
+            <option>Sort: Featured</option>
+            <option>Price: Low to High</option>
+            <option>Price: High to Low</option>
+            <option>Newest First</option>
+          </select>
+        </div>
+
+        <div class="catalog-grid">
+          <div class="product-card catalog-card" onclick="location.href = 'product.html?id=1'">
+            <div class="product-img p1">
+              <div class="card-hover-btns">
+                <button
+                  class="quick-add"
+                  onclick="
+                    event.stopPropagation();
+                    addToCart(1);
+                  "
+                >
+                  QUICK ADD
+                </button>
+              </div>
+              <span class="badge new">NEW</span>
+            </div>
+            <div class="product-info">
+              <span class="product-name">OVERSIZED T-SHIRT</span>
+              <span class="product-price">$22.00</span>
+            </div>
+          </div>
+          <div class="product-card catalog-card" onclick="location.href = 'product.html?id=2'">
+            <div class="product-img p2">
+              <div class="card-hover-btns">
+                <button
+                  class="quick-add"
+                  onclick="
+                    event.stopPropagation();
+                    addToCart(2);
+                  "
+                >
+                  QUICK ADD
+                </button>
+              </div>
+            </div>
+            <div class="product-info">
+              <span class="product-name">LEATHER OVERCOAT</span>
+              <span class="product-price">$89.00</span>
+            </div>
+          </div>
+          <div class="product-card catalog-card" onclick="location.href = 'product.html?id=3'">
+            <div class="product-img p3">
+              <div class="card-hover-btns">
+                <button
+                  class="quick-add"
+                  onclick="
+                    event.stopPropagation();
+                    addToCart(3);
+                  "
+                >
+                  QUICK ADD
+                </button>
+              </div>
+            </div>
+            <div class="product-info">
+              <span class="product-name">THE HUNDRED HOODY</span>
+              <span class="product-price">$45.00</span>
+            </div>
+          </div>
+          <div class="product-card catalog-card" onclick="location.href = 'product.html?id=4'">
+            <div class="product-img p4">
+              <div class="card-hover-btns">
+                <button
+                  class="quick-add"
+                  onclick="
+                    event.stopPropagation();
+                    addToCart(4);
+                  "
+                >
+                  QUICK ADD
+                </button>
+              </div>
+              <span class="badge sale">SALE</span>
+            </div>
+            <div class="product-info">
+              <span class="product-name">WIDE LEG TROUSERS</span>
+              <span class="product-price">$55.00</span>
+            </div>
+          </div>
+          <div class="product-card catalog-card" onclick="location.href = 'product.html?id=5'">
+            <div class="product-img p5">
+              <div class="card-hover-btns">
+                <button
+                  class="quick-add"
+                  onclick="
+                    event.stopPropagation();
+                    addToCart(5);
+                  "
+                >
+                  QUICK ADD
+                </button>
+              </div>
+            </div>
+            <div class="product-info">
+              <span class="product-name">MINIMAL BLAZER</span>
+              <span class="product-price">$110.00</span>
+            </div>
+          </div>
+          <div class="product-card catalog-card" onclick="location.href = 'product.html?id=6'">
+            <div class="product-img p6">
+              <div class="card-hover-btns">
+                <button
+                  class="quick-add"
+                  onclick="
+                    event.stopPropagation();
+                    addToCart(6);
+                  "
+                >
+                  QUICK ADD
+                </button>
+              </div>
+              <span class="badge new">NEW</span>
+            </div>
+            <div class="product-info">
+              <span class="product-name">MULTICOLORED BLAZER</span>
+              <span class="product-price">780dh.00</span>
+            </div>
+          </div>
+          <div class="product-card catalog-card" onclick="location.href = 'product.html?id=7'">
+            <div class="product-img p1">
+              <div class="card-hover-btns">
+                <button
+                  class="quick-add"
+                  onclick="
+                    event.stopPropagation();
+                    addToCart(7);
+                  "
+                >
+                  QUICK ADD
+                </button>
+              </div>
+            </div>
+            <div class="product-info">
+              <span class="product-name">RIBBED KNIT TOP</span>
+              <span class="product-price">$34.00</span>
+            </div>
+          </div>
+          <div class="product-card catalog-card" onclick="location.href = 'product.html?id=8'">
+            <div class="product-img p2">
+              <div class="card-hover-btns">
+                <button
+                  class="quick-add"
+                  onclick="
+                    event.stopPropagation();
+                    addToCart(8);
+                  "
+                >
+                  QUICK ADD
+                </button>
+              </div>
+            </div>
+            <div class="product-info">
+              <span class="product-name">TAILORED TRENCH</span>
+              <span class="product-price">$145.00</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pagination">
+          <span class="page-btn active">1</span>
+          <span class="page-btn">2</span>
+          <span class="page-btn">3</span>
+          <span class="page-btn">→</span>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        <div class="footer-logo">labas.</div>
+        <div class="footer-col">
+          <a href="about.html">ABOUT</a><a href="catalog.html">SHOP</a><a href="#">SALE</a
+          ><a href="#">ARTICLES</a>
+        </div>
+        <div class="footer-col">
+          <a href="#">TRACK ORDER</a><a href="#">RETURN POLICY</a><a href="#">SHIPPING</a
+          ><a href="contact.html">CONTACT US</a>
+        </div>
+        <div class="footer-col">
+          <a href="#">INSTAGRAM</a><a href="#">TIKTOK</a><a href="#">PINTEREST</a
+          ><a href="#">YOUTUBE</a>
+        </div>
+        <div class="footer-col contact-col">
+          <p>Do you have any queries?</p>
+          <a href="mailto:hello@labas.com">hello@labas.com</a>
+        </div>
+      </div>
+      <div class="footer-bottom">© 2025 Labas. All rights reserved.</div>
+    </footer>
+
+    <script src="../js/app.js"></script>
+  </body>
+</html>
