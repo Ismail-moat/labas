@@ -77,4 +77,16 @@ public class UserDAO {
 
         return -1;
     }
+
+    public int countClients() {
+        String sql = "SELECT COUNT(*) FROM users WHERE role = 'client'";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) return rs.getInt(1);
+        } catch (SQLException e) {
+            System.err.println("Erreur countClients : " + e.getMessage());
+        }
+        return 0;
+    }
 }

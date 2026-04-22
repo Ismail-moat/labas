@@ -12,4 +12,8 @@ public class UserService {
 
         return userDAO.login(email, password);
     }
+
+    public int getCustomerCount() {
+        return userDAO.countClients();
+    }
 }

@@ -55,7 +55,7 @@ public class LoginServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/pages/profile.jsp");
 
         } else {
-            response.sendRedirect(request.getContextPath() + "/admin/dashboard.jsp");
+            response.sendRedirect(request.getContextPath() + "/admin/dashboard");
         }
     }
 

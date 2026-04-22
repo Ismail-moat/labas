@@ -16,7 +16,7 @@
 
     <context-param>
         <param-name>dbPassword</param-name>
-        <param-value></param-value>
+        <param-value>Shadow=0hacker</param-value>
     </context-param>
 
     <context-param>
