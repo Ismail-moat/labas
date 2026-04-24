@@ -89,4 +89,43 @@ public class UserDAO {
         }
         return 0;
     }
+
+    public User findByEmail(String email) {
+        String sql = "SELECT * FROM users WHERE email = ?";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+            
+            if (rs.next()) {
+                User user = new User();
+                user.setIdUser(rs.getInt("id"));
+                user.setEmail(rs.getString("email"));
+                user.setPassword(rs.getString("password"));
+                user.setRole(rs.getString("role"));
+                return user;
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur findByEmail : " + e.getMessage());
+        }
+        return null;
+    }
+
+    public boolean update(User user) {
+        String sql = "UPDATE users SET email=?, password=? WHERE id=?";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            
+            ps.setString(1, user.getEmail());
+            ps.setString(2, user.getPassword());
+            ps.setInt(3, user.getIdUser());
+            
+            return ps.executeUpdate() > 0;
+            
+        } catch (SQLException e) {
+            System.err.println("Erreur update user : " + e.getMessage());
+        }
+        return false;
+    }
 }

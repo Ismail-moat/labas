@@ -1,6 +1,6 @@
 -- ============================================================
--- Labas E-Commerce — Schéma de base de données
--- Exécuter ce fichier dans MySQL pour créer toutes les tables
+-- E-Commerce Clothing Store Database
+-- MySQL 8+
 -- ============================================================
 
 SET FOREIGN_KEY_CHECKS = 0;
@@ -13,225 +13,270 @@ SET NAMES utf8mb4;
 
 -- ============================================================
 -- Table: users
--- Stocke l'email, mot de passe et rôle (client ou admin)
 -- ============================================================
-DROP TABLE IF EXISTS `users`;
-CREATE TABLE `users` (
-    `id`         INT          NOT NULL AUTO_INCREMENT,
-    `email`      VARCHAR(100) NOT NULL,
-    `password`   VARCHAR(255) NOT NULL,
-    `role`       ENUM('client','admin') NOT NULL DEFAULT 'client',
-    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `email` (`email`)
+DROP TABLE IF EXISTS users;
+CREATE TABLE users (
+                       id         INT NOT NULL AUTO_INCREMENT,
+                       email      VARCHAR(100) NOT NULL,
+                       password   VARCHAR(255) NOT NULL,
+                       role       ENUM('client','admin') NOT NULL DEFAULT 'client',
+                       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                       PRIMARY KEY (id),
+                       UNIQUE KEY uk_users_email (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Utilisateur admin par défaut
-INSERT INTO `users` VALUES (1, 'admin@shop.com', '123456', 'admin', NOW());
+-- Default admin
+INSERT INTO users (id, email, password, role, created_at)
+VALUES (1, 'admin@shop.com', '123456', 'admin', NOW());
 
 -- ============================================================
 -- Table: clients
--- Informations personnelles du client, liée à users
--- CORRECTION : username était INT → maintenant VARCHAR(50)
---              FK pointe vers `users(id)` et non `user(id)`
 -- ============================================================
-DROP TABLE IF EXISTS `clients`;
-CREATE TABLE `clients` (
-    `id`         INT         NOT NULL AUTO_INCREMENT,
-    `user_id`    INT         NOT NULL,
-    `first_name` VARCHAR(50) NOT NULL,
-    `last_name`  VARCHAR(50) NOT NULL,
-    `username`   VARCHAR(50) NOT NULL,
-    `phone`      VARCHAR(20) DEFAULT NULL,
-    `address`    VARCHAR(100) DEFAULT NULL,
-    `city`       VARCHAR(50)  DEFAULT NULL,
-    `zip_code`   VARCHAR(10)  DEFAULT NULL,
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `user_id` (`user_id`),
-    FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) -- CORRECTION : users et non user
+DROP TABLE IF EXISTS clients;
+CREATE TABLE clients (
+                         id         INT NOT NULL AUTO_INCREMENT,
+                         user_id    INT NOT NULL,
+                         first_name VARCHAR(50) NOT NULL,
+                         last_name  VARCHAR(50) NOT NULL,
+                         username   VARCHAR(50) NOT NULL,
+                         phone      VARCHAR(20) DEFAULT NULL,
+                         address    VARCHAR(100) DEFAULT NULL,
+                         city       VARCHAR(50) DEFAULT NULL,
+                         zip_code   VARCHAR(10) DEFAULT NULL,
+                         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                         PRIMARY KEY (id),
+                         UNIQUE KEY uk_clients_user_id (user_id),
+                         UNIQUE KEY uk_clients_username (username),
+                         CONSTRAINT fk_clients_user
+                             FOREIGN KEY (user_id) REFERENCES users(id)
+                                 ON DELETE CASCADE
+                                 ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ============================================================
 -- Table: staffs
--- Informations des employés/admins, liée à users
--- CORRECTION : FK pointe vers `users(id)`
 -- ============================================================
-DROP TABLE IF EXISTS `staffs`;
-CREATE TABLE `staffs` (
-    `id`         INT          NOT NULL AUTO_INCREMENT,
-    `user_id`    INT          NOT NULL,
-    `first_name` VARCHAR(50)  NOT NULL,
-    `last_name`  VARCHAR(50)  NOT NULL,
-    `position`   VARCHAR(100) DEFAULT NULL,
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `user_id` (`user_id`),
-    FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) -- CORRECTION : users et non user
+DROP TABLE IF EXISTS staffs;
+CREATE TABLE staffs (
+                        id         INT NOT NULL AUTO_INCREMENT,
+                        user_id    INT NOT NULL,
+                        first_name VARCHAR(50) NOT NULL,
+                        last_name  VARCHAR(50) NOT NULL,
+                        position   VARCHAR(100) DEFAULT NULL,
+                        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                        PRIMARY KEY (id),
+                        UNIQUE KEY uk_staffs_user_id (user_id),
+                        CONSTRAINT fk_staffs_user
+                            FOREIGN KEY (user_id) REFERENCES users(id)
+                                ON DELETE CASCADE
+                                ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `staffs` VALUES (1, 1, 'Admin', 'Principal', 'Administrator');
+INSERT INTO staffs (id, user_id, first_name, last_name, position)
+VALUES (1, 1, 'Admin', 'Principal', 'Administrator');
 
 -- ============================================================
 -- Table: category
--- Catégories des produits (ex: Vêtements, Chaussures)
 -- ============================================================
-DROP TABLE IF EXISTS `category`;
-CREATE TABLE `category` (
-    `id`   INT          NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(100) NOT NULL,
-    PRIMARY KEY (`id`)
+DROP TABLE IF EXISTS category;
+CREATE TABLE category (
+                          id   INT NOT NULL AUTO_INCREMENT,
+                          name VARCHAR(100) NOT NULL,
+                          PRIMARY KEY (id),
+                          UNIQUE KEY uk_category_name (name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ============================================================
 -- Table: subcategory
--- Sous-catégories liées à une catégorie
 -- ============================================================
-DROP TABLE IF EXISTS `subcategory`;
-CREATE TABLE `subcategory` (
-    `id`          INT          NOT NULL AUTO_INCREMENT,
-    `name`        VARCHAR(100) NOT NULL,
-    `category_id` INT DEFAULT NULL,
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`category_id`) REFERENCES `category`(`id`)
+DROP TABLE IF EXISTS subcategory;
+CREATE TABLE subcategory (
+                             id          INT NOT NULL AUTO_INCREMENT,
+                             name        VARCHAR(100) NOT NULL,
+                             category_id INT NOT NULL,
+                             PRIMARY KEY (id),
+                             UNIQUE KEY uk_subcategory_name_category (name, category_id),
+                             CONSTRAINT fk_subcategory_category
+                                 FOREIGN KEY (category_id) REFERENCES category(id)
+                                     ON DELETE CASCADE
+                                     ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ============================================================
 -- Table: products
--- Catalogue produits
 -- ============================================================
-DROP TABLE IF EXISTS `products`;
-CREATE TABLE `products` (
-    `id`             INT            NOT NULL AUTO_INCREMENT,
-    `name`           VARCHAR(100)   NOT NULL,
-    `description`    TEXT,
-    `price`          DECIMAL(10,2)  NOT NULL,
-    `vat_rate`       DECIMAL(5,2)   NOT NULL DEFAULT '20.00',
-    `image_url`      VARCHAR(500)   DEFAULT NULL,
-    `stock_qty`      INT            NOT NULL DEFAULT 0,
-    `size`           VARCHAR(20)    DEFAULT NULL,
-    `category_id`    INT            DEFAULT NULL,
-    `subcategory_id` INT            DEFAULT NULL,
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`category_id`)    REFERENCES `category`(`id`),
-    FOREIGN KEY (`subcategory_id`) REFERENCES `subcategory`(`id`)
+DROP TABLE IF EXISTS products;
+CREATE TABLE products (
+                          id             INT NOT NULL AUTO_INCREMENT,
+                          name           VARCHAR(100) NOT NULL,
+                          description    TEXT,
+                          price          DECIMAL(10,2) NOT NULL,
+                          vat_rate       DECIMAL(5,2) NOT NULL DEFAULT 20.00,
+                          image_url      VARCHAR(500) DEFAULT NULL,
+                          stock_qty      INT NOT NULL DEFAULT 0,
+                          size           VARCHAR(20) DEFAULT NULL,
+                          category_id    INT NOT NULL,
+                          subcategory_id INT DEFAULT NULL,
+                          created_at     DATETIME DEFAULT CURRENT_TIMESTAMP,
+                          updated_at     DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                          PRIMARY KEY (id),
+                          CONSTRAINT fk_products_category
+                              FOREIGN KEY (category_id) REFERENCES category(id)
+                                  ON DELETE RESTRICT
+                                  ON UPDATE CASCADE,
+                          CONSTRAINT fk_products_subcategory
+                              FOREIGN KEY (subcategory_id) REFERENCES subcategory(id)
+                                  ON DELETE SET NULL
+                                  ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ============================================================
 -- Table: cart
--- Panier d'un client
--- CORRECTION : FK pointe vers `clients(id)` et non `client(id)`
+-- One cart per client
 -- ============================================================
-DROP TABLE IF EXISTS `cart`;
-CREATE TABLE `cart` (
-    `id`         INT      NOT NULL AUTO_INCREMENT,
-    `client_id`  INT      DEFAULT NULL,
-    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`client_id`) REFERENCES `clients`(`id`) -- CORRECTION
+DROP TABLE IF EXISTS cart;
+CREATE TABLE cart (
+                      id         INT NOT NULL AUTO_INCREMENT,
+                      client_id  INT NOT NULL,
+                      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                      PRIMARY KEY (id),
+                      UNIQUE KEY uk_cart_client_id (client_id),
+                      CONSTRAINT fk_cart_client
+                          FOREIGN KEY (client_id) REFERENCES clients(id)
+                              ON DELETE CASCADE
+                              ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ============================================================
 -- Table: cart_item
--- Produits dans le panier
--- CORRECTION : FK pointe vers `products(id)` et non `product(id)`
 -- ============================================================
-DROP TABLE IF EXISTS `cart_item`;
-CREATE TABLE `cart_item` (
-    `id`         INT           NOT NULL AUTO_INCREMENT,
-    `cart_id`    INT           DEFAULT NULL,
-    `product_id` INT           DEFAULT NULL,
-    `quantity`   INT           NOT NULL DEFAULT 1,
-    `unit_price` DECIMAL(10,2) NOT NULL,
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`cart_id`)    REFERENCES `cart`(`id`),
-    FOREIGN KEY (`product_id`) REFERENCES `products`(`id`) -- CORRECTION
+DROP TABLE IF EXISTS cart_item;
+CREATE TABLE cart_item (
+                           id         INT NOT NULL AUTO_INCREMENT,
+                           cart_id    INT NOT NULL,
+                           product_id INT NOT NULL,
+                           quantity   INT NOT NULL DEFAULT 1,
+                           unit_price DECIMAL(10,2) NOT NULL,
+                           PRIMARY KEY (id),
+                           UNIQUE KEY uk_cart_item_cart_product (cart_id, product_id),
+                           CONSTRAINT fk_cart_item_cart
+                               FOREIGN KEY (cart_id) REFERENCES cart(id)
+                                   ON DELETE CASCADE
+                                   ON UPDATE CASCADE,
+                           CONSTRAINT fk_cart_item_product
+                               FOREIGN KEY (product_id) REFERENCES products(id)
+                                   ON DELETE RESTRICT
+                                   ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ============================================================
--- Table: `orders` (renommée pour éviter le mot réservé ORDER)
--- Commandes d'un client
+-- Table: orders
 -- ============================================================
-DROP TABLE IF EXISTS `orders`;
-CREATE TABLE `orders` (
-    `id`         INT           NOT NULL AUTO_INCREMENT,
-    `client_id`  INT           DEFAULT NULL,
-    `created_at` DATETIME      DEFAULT CURRENT_TIMESTAMP,
-    `total_excl` DECIMAL(10,2) NOT NULL,
-    `total_incl` DECIMAL(10,2) NOT NULL,
-    `status`     ENUM('pending','confirmed','shipped','delivered','cancelled') DEFAULT 'pending',
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`client_id`) REFERENCES `clients`(`id`) -- CORRECTION
+DROP TABLE IF EXISTS orders;
+CREATE TABLE orders (
+                        id          INT NOT NULL AUTO_INCREMENT,
+                        client_id   INT NOT NULL,
+                        created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
+                        total_excl  DECIMAL(10,2) NOT NULL,
+                        total_incl  DECIMAL(10,2) NOT NULL,
+                        status      ENUM('pending','confirmed','shipped','delivered','cancelled') NOT NULL DEFAULT 'pending',
+                        PRIMARY KEY (id),
+                        CONSTRAINT fk_orders_client
+                            FOREIGN KEY (client_id) REFERENCES clients(id)
+                                ON DELETE RESTRICT
+                                ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ============================================================
 -- Table: order_item
--- Produits dans une commande
--- CORRECTION : FK vers `orders(id)` et `products(id)`
 -- ============================================================
-DROP TABLE IF EXISTS `order_item`;
-CREATE TABLE `order_item` (
-    `id`          INT           NOT NULL AUTO_INCREMENT,
-    `order_id`    INT           DEFAULT NULL,
-    `product_id`  INT           DEFAULT NULL,
-    `quantity`    INT           NOT NULL,
-    `amount_excl` DECIMAL(10,2) NOT NULL,
-    `amount_incl` DECIMAL(10,2) NOT NULL,
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`order_id`)   REFERENCES `orders`(`id`),   -- CORRECTION
-    FOREIGN KEY (`product_id`) REFERENCES `products`(`id`)  -- CORRECTION
+DROP TABLE IF EXISTS order_item;
+CREATE TABLE order_item (
+                            id          INT NOT NULL AUTO_INCREMENT,
+                            order_id    INT NOT NULL,
+                            product_id   INT NOT NULL,
+                            quantity    INT NOT NULL,
+                            amount_excl DECIMAL(10,2) NOT NULL,
+                            amount_incl DECIMAL(10,2) NOT NULL,
+                            PRIMARY KEY (id),
+                            CONSTRAINT fk_order_item_order
+                                FOREIGN KEY (order_id) REFERENCES orders(id)
+                                    ON DELETE CASCADE
+                                    ON UPDATE CASCADE,
+                            CONSTRAINT fk_order_item_product
+                                FOREIGN KEY (product_id) REFERENCES products(id)
+                                    ON DELETE RESTRICT
+                                    ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ============================================================
 -- Table: delivery
--- Livraison associée à une commande
--- CORRECTION : FK vers `orders(id)`
 -- ============================================================
-DROP TABLE IF EXISTS `delivery`;
-CREATE TABLE `delivery` (
-    `id`             INT          NOT NULL AUTO_INCREMENT,
-    `order_id`       INT          DEFAULT NULL,
-    `address`        VARCHAR(100) DEFAULT NULL,
-    `address_extra`  VARCHAR(100) DEFAULT NULL,
-    `zip_code`       VARCHAR(10)  DEFAULT NULL,
-    `city`           VARCHAR(50)  DEFAULT NULL,
-    `status`         ENUM('preparing','shipped','in_transit','delivered') DEFAULT 'preparing',
-    `estimated_date` DATE         DEFAULT NULL,
-    `delivered_date` DATE         DEFAULT NULL,
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`order_id`) REFERENCES `orders`(`id`) -- CORRECTION
+DROP TABLE IF EXISTS delivery;
+CREATE TABLE delivery (
+                          id              INT NOT NULL AUTO_INCREMENT,
+                          order_id        INT NOT NULL,
+                          address         VARCHAR(100) DEFAULT NULL,
+                          address_extra   VARCHAR(100) DEFAULT NULL,
+                          zip_code        VARCHAR(10) DEFAULT NULL,
+                          city            VARCHAR(50) DEFAULT NULL,
+                          status          ENUM('preparing','shipped','in_transit','delivered') NOT NULL DEFAULT 'preparing',
+                          estimated_date  DATE DEFAULT NULL,
+                          delivered_date  DATE DEFAULT NULL,
+                          PRIMARY KEY (id),
+                          UNIQUE KEY uk_delivery_order_id (order_id),
+                          CONSTRAINT fk_delivery_order
+                              FOREIGN KEY (order_id) REFERENCES orders(id)
+                                  ON DELETE CASCADE
+                                  ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ============================================================
 -- Table: review
--- Avis des clients sur les produits
 -- ============================================================
-DROP TABLE IF EXISTS `review`;
-CREATE TABLE `review` (
-    `id`         INT      NOT NULL AUTO_INCREMENT,
-    `client_id`  INT      DEFAULT NULL,
-    `product_id` INT      DEFAULT NULL,
-    `rating`     INT      DEFAULT NULL,
-    `content`    TEXT,
-    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`client_id`)  REFERENCES `clients`(`id`),  -- CORRECTION
-    FOREIGN KEY (`product_id`) REFERENCES `products`(`id`), -- CORRECTION
-    CONSTRAINT `review_rating_chk` CHECK (`rating` BETWEEN 1 AND 5)
+DROP TABLE IF EXISTS review;
+CREATE TABLE review (
+                        id         INT NOT NULL AUTO_INCREMENT,
+                        client_id  INT NOT NULL,
+                        product_id INT NOT NULL,
+                        rating     INT NOT NULL,
+                        content    TEXT,
+                        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                        PRIMARY KEY (id),
+                        CONSTRAINT chk_review_rating CHECK (rating BETWEEN 1 AND 5),
+                        CONSTRAINT fk_review_client
+                            FOREIGN KEY (client_id) REFERENCES clients(id)
+                                ON DELETE CASCADE
+                                ON UPDATE CASCADE,
+                        CONSTRAINT fk_review_product
+                            FOREIGN KEY (product_id) REFERENCES products(id)
+                                ON DELETE CASCADE
+                                ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ============================================================
 -- Table: review_reply
--- Réponse d'un staff à un avis client
 -- ============================================================
-DROP TABLE IF EXISTS `review_reply`;
-CREATE TABLE `review_reply` (
-    `id`         INT      NOT NULL AUTO_INCREMENT,
-    `review_id`  INT      DEFAULT NULL,
-    `staff_id`   INT      DEFAULT NULL,
-    `content`    TEXT,
-    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`review_id`) REFERENCES `review`(`id`),
-    FOREIGN KEY (`staff_id`)  REFERENCES `staffs`(`id`) -- CORRECTION
+DROP TABLE IF EXISTS review_reply;
+CREATE TABLE review_reply (
+                              id         INT NOT NULL AUTO_INCREMENT,
+                              review_id  INT NOT NULL,
+                              staff_id   INT NOT NULL,
+                              content    TEXT,
+                              created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                              PRIMARY KEY (id),
+                              CONSTRAINT fk_review_reply_review
+                                  FOREIGN KEY (review_id) REFERENCES review(id)
+                                      ON DELETE CASCADE
+                                      ON UPDATE CASCADE,
+                              CONSTRAINT fk_review_reply_staff
+                                  FOREIGN KEY (staff_id) REFERENCES staffs(id)
+                                      ON DELETE RESTRICT
+                                      ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 SET FOREIGN_KEY_CHECKS = 1;

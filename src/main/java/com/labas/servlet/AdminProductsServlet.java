@@ -18,11 +18,7 @@ public class AdminProductsServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        HttpSession session = request.getSession(false);
-        if (session == null || !"admin".equalsIgnoreCase((String) session.getAttribute("role"))) {
-            response.sendRedirect(request.getContextPath() + "/login");
-            return;
-        }
+        // Access control handled by AdminFilter
 
         List<Product> products = productService.getAllProducts();
         request.setAttribute("products", products);

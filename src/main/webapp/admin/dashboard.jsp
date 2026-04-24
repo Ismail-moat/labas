@@ -196,6 +196,7 @@
                     <c:when test="${not empty recentOrders}">
                         <c:forEach var="order" items="${recentOrders}">
                             <tr>
+                                <td>#<c:out value="${order.id}" /></td>
                                 <td><c:out value="${order.customerName}" /></td>
                                 <td>
                                         <%-- order.createdAt doit être un java.util.Date ou LocalDateTime --%>

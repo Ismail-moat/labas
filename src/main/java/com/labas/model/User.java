@@ -1,39 +1,70 @@
 package com.labas.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
+/**
+ * User - Classe de base pour les utilisateurs.
+ * Utilisée par les DAO pour stocker les informations d'authentification.
+ * Client et Staff héritent de cette classe.
+ */
 public class User {
 
     private int idUser;
     private String email;
     private String password;
-    private String role;        // "client" ou "admin"
-    private LocalDate dateCreate;
+    private String role;
+    private LocalDateTime createdAt;
 
-    public User() {}
+    public User() {
+    }
 
-    public User(int idUser, String email, String password, String role, LocalDate dateCreate) {
+    public User(int idUser, String email, String password, String role, LocalDateTime createdAt) {
         this.idUser = idUser;
         this.email = email;
         this.password = password;
         this.role = role;
-        this.dateCreate = dateCreate;
+        this.createdAt = createdAt;
     }
 
-    // --- Getters et Setters ---
+    // --- Getters & Setters ---
 
-    public int getIdUser() { return idUser; }
-    public void setIdUser(int idUser) { this.idUser = idUser; }
+    public int getIdUser() {
+        return idUser;
+    }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public void setIdUser(int idUser) {
+        this.idUser = idUser;
+    }
 
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
+    public String getEmail() {
+        return email;
+    }
 
-    public String getRole() { return role; }
-    public void setRole(String role) { this.role = role; }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-    public LocalDate getDateCreate() { return dateCreate; }
-    public void setDateCreate(LocalDate dateCreate) { this.dateCreate = dateCreate; }
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 }
