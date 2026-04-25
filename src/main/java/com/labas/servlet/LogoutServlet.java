@@ -6,10 +6,7 @@ import jakarta.servlet.http.*;
 
 import java.io.IOException;
 
-/**
- * LogoutServlet - Gère la déconnexion de l'utilisateur.
- * Invalide la session actuelle et redirige vers la page de connexion.
- */
+
 @WebServlet("/logout")
 public class LogoutServlet extends HttpServlet {
 
@@ -23,7 +20,6 @@ public class LogoutServlet extends HttpServlet {
             session.invalidate();
         }
 
-        // Redirection vers l'URL mapping du login
         response.sendRedirect(request.getContextPath() + "/login");
     }
 }

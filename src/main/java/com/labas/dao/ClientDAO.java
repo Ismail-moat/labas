@@ -19,7 +19,7 @@ public class ClientDAO {
             ps.setInt(1, client.getIdUser());
             ps.setString(2, client.getFirstName());
             ps.setString(3, client.getLastName());
-            ps.setString(4, client.getUsername());   // CORRECTION : ajout de username
+            ps.setString(4, client.getUsername());
             ps.setString(5, client.getPhone());
             ps.setString(6, client.getAddress());
             ps.setString(7, client.getCity());
@@ -83,7 +83,7 @@ public class ClientDAO {
 
             ps.setString(1, client.getFirstName());
             ps.setString(2, client.getLastName());
-            ps.setString(3, client.getUsername());   // CORRECTION : mise à jour du username
+            ps.setString(3, client.getUsername());
             ps.setString(4, client.getPhone());
             ps.setString(5, client.getAddress());
             ps.setString(6, client.getCity());

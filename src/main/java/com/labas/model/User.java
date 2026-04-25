@@ -2,11 +2,6 @@ package com.labas.model;
 
 import java.time.LocalDateTime;
 
-/**
- * User - Classe de base pour les utilisateurs.
- * Utilisée par les DAO pour stocker les informations d'authentification.
- * Client et Staff héritent de cette classe.
- */
 public class User {
 
     private int idUser;
@@ -26,7 +21,6 @@ public class User {
         this.createdAt = createdAt;
     }
 
-    // --- Getters & Setters ---
 
     public int getIdUser() {
         return idUser;

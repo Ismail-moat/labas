@@ -1,7 +1,7 @@
 package com.labas.service;
 
 import com.labas.dao.OrderDAO;
-import com.labas.model.OrderDTO;
+import com.labas.dto.OrderDTO;
 
 import java.util.List;
 

@@ -10,10 +10,7 @@ import jakarta.servlet.http.*;
 
 import java.io.IOException;
 
-/**
- * ProfileServlet - Gère l'affichage et la mise à jour du profil utilisateur.
- * Délègue la logique métier à ProfileService (qui met à jour users ET clients).
- */
+
 @WebServlet("/profile")
 public class ProfileServlet extends HttpServlet {
 
@@ -45,7 +42,6 @@ public class ProfileServlet extends HttpServlet {
         int    userId   = (int)    session.getAttribute("userId");
         String email    = (String) session.getAttribute("email");
 
-        // Récupération des données du formulaire
         String firstName = request.getParameter("firstName");
         String lastName  = request.getParameter("lastName");
         String username  = request.getParameter("username");
@@ -54,14 +50,12 @@ public class ProfileServlet extends HttpServlet {
         String city      = request.getParameter("city");
         String zipCode   = request.getParameter("zipCode");
 
-        // Objet User (pour update email si fourni)
         String newEmail = request.getParameter("email");
         User user = new User();
         user.setIdUser(userId);
         user.setEmail(newEmail != null && !newEmail.isBlank() ? newEmail : email);
-        user.setPassword((String) session.getAttribute("password")); // conserve le mot de passe actuel
+        user.setPassword((String) session.getAttribute("password"));
 
-        // Objet Client
         Client client = new Client();
         client.setIdUser(userId);
         client.setFirstName(firstName);
@@ -72,11 +66,9 @@ public class ProfileServlet extends HttpServlet {
         client.setCity(city);
         client.setZipCode(zipCode);
 
-        // Délégation à ProfileService (met à jour users ET clients)
         boolean succes = profileService.updateProfile(user, client);
 
         if (succes) {
-            // Mise à jour de la session
             session.setAttribute("email",     user.getEmail());
             session.setAttribute("firstName", firstName);
             session.setAttribute("lastName",  lastName);

@@ -1,6 +1,6 @@
 package com.labas.dao;
 
-import com.labas.model.OrderDTO;
+import com.labas.dto.OrderDTO;
 import com.labas.util.DBConnection;
 
 import java.sql.*;
@@ -34,11 +34,19 @@ public class OrderDAO {
     }
 
     public List<OrderDTO> findRecent(int limit) {
-        return fetchOrders("SELECT o.id, c.first_name, c.last_name, o.created_at, o.total_incl, o.status FROM orders o LEFT JOIN clients c ON o.client_id = c.id ORDER BY o.created_at DESC LIMIT ?", limit);
+        return fetchOrders("SELECT o.id, c.first_name, c.last_name, u.email, o.created_at, o.total_excl, o.total_incl, o.status " +
+                           "FROM orders o " +
+                           "LEFT JOIN clients c ON o.client_id = c.id " +
+                           "LEFT JOIN users u ON c.user_id = u.id " +
+                           "ORDER BY o.created_at DESC LIMIT ?", limit);
     }
 
     public List<OrderDTO> findAllWithCustomerName() {
-        return fetchOrders("SELECT o.id, c.first_name, c.last_name, o.created_at, o.total_incl, o.status FROM orders o LEFT JOIN clients c ON o.client_id = c.id ORDER BY o.created_at DESC", null);
+        return fetchOrders("SELECT o.id, c.first_name, c.last_name, u.email, o.created_at, o.total_excl, o.total_incl, o.status " +
+                           "FROM orders o " +
+                           "LEFT JOIN clients c ON o.client_id = c.id " +
+                           "LEFT JOIN users u ON c.user_id = u.id " +
+                           "ORDER BY o.created_at DESC", null);
     }
 
     private List<OrderDTO> fetchOrders(String sql, Integer limit) {
@@ -62,12 +70,14 @@ public class OrderDAO {
                         customerName = firstName + " " + lastName;
                     }
                     dto.setCustomerName(customerName);
+                    dto.setCustomerEmail(rs.getString("email"));
                     
                     Timestamp ts = rs.getTimestamp("created_at");
                     if (ts != null) {
                         dto.setCreatedAt(ts);
                     }
                     
+                    dto.setTotalExcl(rs.getBigDecimal("total_excl"));
                     dto.setTotalIncl(rs.getBigDecimal("total_incl"));
                     dto.setStatus(rs.getString("status"));
                     

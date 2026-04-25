@@ -11,11 +11,7 @@ import jakarta.servlet.http.*;
 
 import java.io.IOException;
 
-/**
- * LoginServlet - Gère l'authentification des utilisateurs.
- * Délègue la vérification des identifiants à AuthService.
- * Redirige vers le dashboard admin ou la page profil selon le rôle.
- */
+
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
@@ -29,7 +25,6 @@ public class LoginServlet extends HttpServlet {
         String email    = request.getParameter("email");
         String password = request.getParameter("password");
 
-        // Authentification via AuthService (respecte le diagramme de séquence login)
         User user = authService.authenticate(email, password);
 
         if (user == null) {
@@ -38,15 +33,12 @@ public class LoginServlet extends HttpServlet {
             return;
         }
 
-        // Création de la session HTTP avec userId et role
         HttpSession session = request.getSession();
         session.setAttribute("userId", user.getIdUser());
         session.setAttribute("email",  user.getEmail());
         session.setAttribute("role",   user.getRole());
 
-        // Redirection selon le rôle
         if ("client".equalsIgnoreCase(user.getRole())) {
-            // Charger les infos du client dans la session
             Client client = clientService.trouverParUser(user);
 
             if (client != null) {
@@ -62,7 +54,6 @@ public class LoginServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/pages/profile.jsp");
 
         } else {
-            // L'admin est redirigé vers le dashboard (protégé par AdminFilter)
             response.sendRedirect(request.getContextPath() + "/admin/dashboard");
         }
     }

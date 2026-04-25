@@ -3,11 +3,7 @@ package com.labas.model;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * Client - Hérite de User.
- * Représente un client du site e-commerce.
- * Possède un panier, des commandes et des avis.
- */
+
 public class Client extends User {
 
     private String firstName;
@@ -26,7 +22,6 @@ public class Client extends User {
         super();
     }
 
-    // --- Getters & Setters ---
 
     public String getFirstName() {
         return firstName;

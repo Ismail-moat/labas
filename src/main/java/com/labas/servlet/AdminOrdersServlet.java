@@ -1,6 +1,6 @@
 package com.labas.servlet;
 
-import com.labas.model.OrderDTO;
+import com.labas.dto.OrderDTO;
 import com.labas.service.OrderService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

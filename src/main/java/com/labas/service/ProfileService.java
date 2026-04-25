@@ -16,10 +16,8 @@ public class ProfileService {
     }
 
     public boolean updateProfile(User user, Client client) {
-        // Update user info (email, password)
         boolean userUpdated = userDAO.update(user);
         
-        // Update client info
         boolean clientUpdated = false;
         if (userUpdated) {
             clientUpdated = clientDAO.update(client);
