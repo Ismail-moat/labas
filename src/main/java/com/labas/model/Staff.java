@@ -1,12 +1,5 @@
 package com.labas.model;
 
-import java.time.LocalDateTime;
-
-/**
- * Staff - Hérite de User.
- * Représente un membre du personnel (administrateur).
- * Peut répondre aux avis clients via ReviewReply.
- */
 public class Staff extends User {
 
     private String firstName;
@@ -17,7 +10,6 @@ public class Staff extends User {
         super();
     }
 
-    // --- Getters & Setters ---
 
     public String getFirstName() {
         return firstName;

@@ -18,7 +18,6 @@ public class AdminOrdersServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // Access control handled by AdminFilter
 
         List<OrderDTO> orders = orderService.getAllOrders();
         request.setAttribute("orders", orders);

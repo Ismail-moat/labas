@@ -18,7 +18,6 @@ public class AdminProductsServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // Access control handled by AdminFilter
 
         List<Product> products = productService.getAllProducts();
         request.setAttribute("products", products);
