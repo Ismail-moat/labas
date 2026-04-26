@@ -10,7 +10,6 @@ public class Staff extends User {
         super();
     }
 
-
     public String getFirstName() {
         return firstName;
     }
@@ -35,3 +34,4 @@ public class Staff extends User {
         this.position = position;
     }
 }
+

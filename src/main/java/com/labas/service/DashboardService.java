@@ -1,6 +1,5 @@
 package com.labas.service;
 
-import com.labas.dao.ClientDAO; // Use UserDAO.countClients() instead as ClientDAO doesn't have it
 import com.labas.dao.OrderDAO;
 import com.labas.dao.ProductDAO;
 import com.labas.dao.UserDAO;
@@ -21,12 +20,14 @@ public class DashboardService {
 
     public Map<String, Object> loadStatistics() {
         Map<String, Object> stats = new HashMap<>();
-        
+
         stats.put("totalOrders", orderDAO.count());
         stats.put("totalProducts", productDAO.count());
         stats.put("totalClients", userDAO.countClients());
         stats.put("totalSales", orderDAO.getTotalSales());
-        
+        stats.put("topProducts", productDAO.getTopSellingProducts(5));
+
         return stats;
     }
 }
+

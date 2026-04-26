@@ -9,7 +9,6 @@ import jakarta.servlet.http.*;
 
 import java.io.IOException;
 
-
 @WebServlet("/register")
 public class RegisterServlet extends HttpServlet {
 
@@ -18,7 +17,6 @@ public class RegisterServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
-
 
         String email     = request.getParameter("email");
         String password  = request.getParameter("password");
@@ -33,6 +31,7 @@ public class RegisterServlet extends HttpServlet {
         Client client = new Client();
         client.setEmail(email);
         client.setPassword(password);
+        client.setRole("client");
         client.setFirstName(firstName);
         client.setLastName(lastName);
         client.setUsername(username);
@@ -50,7 +49,6 @@ public class RegisterServlet extends HttpServlet {
             request.getRequestDispatcher("/pages/register.jsp").forward(request, response);
         }
     }
-
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)

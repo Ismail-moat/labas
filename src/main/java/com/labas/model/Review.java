@@ -15,7 +15,7 @@ public class Review {
     public Review() {
     }
 
-    public Review(Integer id, Integer rating, String content, LocalDateTime createdAt, 
+    public Review(Integer id, Integer rating, String content, LocalDateTime createdAt,
                   Client client, Product product, List<ReviewReply> replies) {
         this.id = id;
         this.rating = rating;
@@ -82,3 +82,4 @@ public class Review {
         this.replies = replies;
     }
 }
+

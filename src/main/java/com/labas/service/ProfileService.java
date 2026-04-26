@@ -17,12 +17,13 @@ public class ProfileService {
 
     public boolean updateProfile(User user, Client client) {
         boolean userUpdated = userDAO.update(user);
-        
+
         boolean clientUpdated = false;
         if (userUpdated) {
             clientUpdated = clientDAO.update(client);
         }
-        
+
         return userUpdated && clientUpdated;
     }
 }
+

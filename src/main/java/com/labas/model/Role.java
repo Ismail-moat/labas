@@ -4,3 +4,4 @@ public enum Role {
     CLIENT,
     ADMIN
 }
+

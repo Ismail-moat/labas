@@ -49,15 +49,28 @@ public class OrderDAO {
                            "ORDER BY o.created_at DESC", null);
     }
 
+    public boolean updateStatus(int orderId, String status) {
+        String sql = "UPDATE orders SET status = ? WHERE id = ?";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, status);
+            ps.setInt(2, orderId);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Erreur OrderDAO.updateStatus : " + e.getMessage());
+        }
+        return false;
+    }
+
     private List<OrderDTO> fetchOrders(String sql, Integer limit) {
         List<OrderDTO> orders = new ArrayList<>();
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
-             
+
             if (limit != null) {
                 ps.setInt(1, limit);
             }
-             
+
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     OrderDTO dto = new OrderDTO();
@@ -71,16 +84,16 @@ public class OrderDAO {
                     }
                     dto.setCustomerName(customerName);
                     dto.setCustomerEmail(rs.getString("email"));
-                    
+
                     Timestamp ts = rs.getTimestamp("created_at");
                     if (ts != null) {
                         dto.setCreatedAt(ts);
                     }
-                    
+
                     dto.setTotalExcl(rs.getBigDecimal("total_excl"));
                     dto.setTotalIncl(rs.getBigDecimal("total_incl"));
                     dto.setStatus(rs.getString("status"));
-                    
+
                     orders.add(dto);
                 }
             }
@@ -90,3 +103,4 @@ public class OrderDAO {
         return orders;
     }
 }
+

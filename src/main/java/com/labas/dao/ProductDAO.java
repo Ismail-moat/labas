@@ -19,6 +19,7 @@ public class ProductDAO {
 
             while (rs.next()) {
                 Product p = new Product();
+                p.setId(rs.getInt("id"));
                 p.setName(rs.getString("name"));
                 p.setDescription(rs.getString("description"));
                 p.setPrice(rs.getBigDecimal("price"));
@@ -41,11 +42,12 @@ public class ProductDAO {
         String sql = "SELECT * FROM products WHERE id = ?";
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
-             
+
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     Product p = new Product();
+                    p.setId(rs.getInt("id"));
                     p.setName(rs.getString("name"));
                     p.setDescription(rs.getString("description"));
                     p.setPrice(rs.getBigDecimal("price"));
@@ -100,6 +102,7 @@ public class ProductDAO {
             ps.setString(7, product.getSize());
             if (product.getCategoryId() != null) ps.setInt(8, product.getCategoryId()); else ps.setNull(8, Types.INTEGER);
             if (product.getSubcategoryId() != null) ps.setInt(9, product.getSubcategoryId()); else ps.setNull(9, Types.INTEGER);
+            ps.setInt(10, product.getId());
 
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -131,4 +134,33 @@ public class ProductDAO {
         }
         return 0;
     }
+
+    public List<Product> getTopSellingProducts(int limit) {
+        List<Product> products = new ArrayList<>();
+        String sql = "SELECT p.*, SUM(oi.quantity) as total_sold " +
+                     "FROM products p " +
+                     "JOIN order_item oi ON p.id = oi.product_id " +
+                     "GROUP BY p.id " +
+                     "ORDER BY total_sold DESC " +
+                     "LIMIT ?";
+
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, limit);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Product p = new Product();
+                    p.setId(rs.getInt("id"));
+                    p.setName(rs.getString("name"));
+                    p.setPrice(rs.getBigDecimal("price"));
+                    p.setImageUrl(rs.getString("image_url"));
+                    products.add(p);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur ProductDAO.getTopSellingProducts : " + e.getMessage());
+        }
+        return products;
+    }
 }
+

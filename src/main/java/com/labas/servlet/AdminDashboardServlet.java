@@ -12,7 +12,6 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Map;
 
-
 @WebServlet("/admin/dashboard")
 public class AdminDashboardServlet extends HttpServlet {
 
@@ -23,7 +22,6 @@ public class AdminDashboardServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-
         HttpSession session = request.getSession(false);
 
         Map<String, Object> stats = dashboardService.loadStatistics();
@@ -33,8 +31,10 @@ public class AdminDashboardServlet extends HttpServlet {
         request.setAttribute("orderCount",    stats.get("totalOrders"));
         request.setAttribute("productCount",  stats.get("totalProducts"));
         request.setAttribute("customerCount", stats.get("totalClients"));
+        request.setAttribute("topProducts",   stats.get("topProducts"));
         request.setAttribute("recentOrders",  orderService.getRecentOrders(5));
 
         request.getRequestDispatcher("/admin/dashboard.jsp").forward(request, response);
     }
 }
+

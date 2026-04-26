@@ -3,7 +3,6 @@ package com.labas.model;
 import java.time.LocalDateTime;
 import java.util.List;
 
-
 public class Client extends User {
 
     private String firstName;
@@ -21,7 +20,6 @@ public class Client extends User {
     public Client() {
         super();
     }
-
 
     public String getFirstName() {
         return firstName;
@@ -103,3 +101,4 @@ public class Client extends User {
         this.reviews = reviews;
     }
 }
+

@@ -3,9 +3,6 @@ package com.labas.dto;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-/**
- * OrderDTO - Data Transfer Object for Order display in admin views.
- */
 public class OrderDTO {
     private Integer id;
     private String customerName;
@@ -17,7 +14,7 @@ public class OrderDTO {
 
     public OrderDTO() {}
 
-    public OrderDTO(Integer id, String customerName, String customerEmail, Timestamp createdAt, 
+    public OrderDTO(Integer id, String customerName, String customerEmail, Timestamp createdAt,
                     BigDecimal totalExcl, BigDecimal totalIncl, String status) {
         this.id = id;
         this.customerName = customerName;
@@ -94,3 +91,4 @@ public class OrderDTO {
                 '}';
     }
 }
+

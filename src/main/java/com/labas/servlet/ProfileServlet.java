@@ -10,7 +10,6 @@ import jakarta.servlet.http.*;
 
 import java.io.IOException;
 
-
 @WebServlet("/profile")
 public class ProfileServlet extends HttpServlet {
 
@@ -78,10 +77,11 @@ public class ProfileServlet extends HttpServlet {
             session.setAttribute("city",      city);
             session.setAttribute("zipCode",   zipCode);
 
-            response.sendRedirect(request.getContextPath() + "/pages/profile.jsp?succes=1");
+            response.sendRedirect(request.getContextPath() + "/profile?succes=1");
         } else {
-            request.setAttribute("erreur", "Une erreur est survenue. Veuillez réessayer.");
+            request.setAttribute("erreur", "Une erreur est survenue. Veuillez réessayer plus tard.");
             request.getRequestDispatcher("/pages/profile.jsp").forward(request, response);
         }
     }
 }
+

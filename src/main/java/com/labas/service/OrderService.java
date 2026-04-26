@@ -27,4 +27,9 @@ public class OrderService {
     public List<OrderDTO> getAllOrders() {
         return orderDAO.findAllWithCustomerName();
     }
+
+    public boolean updateOrderStatus(int orderId, String status) {
+        return orderDAO.updateStatus(orderId, status);
+    }
 }
+

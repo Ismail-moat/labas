@@ -22,8 +22,8 @@ public class Product {
     public Product() {
     }
 
-    public Product(Integer id, String name, String description, BigDecimal price, BigDecimal vatRate, 
-                   String imageUrl, Integer stockQty, String size, Category category, 
+    public Product(Integer id, String name, String description, BigDecimal price, BigDecimal vatRate,
+                   String imageUrl, Integer stockQty, String size, Category category,
                    Subcategory subcategory, List<Review> reviews) {
         this.id = id;
         this.name = name;
@@ -142,3 +142,4 @@ public class Product {
         this.subcategoryId = subcategoryId;
     }
 }
+

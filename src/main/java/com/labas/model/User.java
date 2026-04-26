@@ -21,7 +21,6 @@ public class User {
         this.createdAt = createdAt;
     }
 
-
     public int getIdUser() {
         return idUser;
     }
@@ -62,3 +61,4 @@ public class User {
         this.createdAt = createdAt;
     }
 }
+

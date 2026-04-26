@@ -17,7 +17,7 @@ public class Order {
     public Order() {
     }
 
-    public Order(Integer id, LocalDateTime createdAt, BigDecimal totalExcl, BigDecimal totalIncl, 
+    public Order(Integer id, LocalDateTime createdAt, BigDecimal totalExcl, BigDecimal totalIncl,
                  OrderStatus status, Client client, List<OrderItem> items, Delivery delivery) {
         this.id = id;
         this.createdAt = createdAt;
@@ -93,3 +93,4 @@ public class Order {
         this.delivery = delivery;
     }
 }
+

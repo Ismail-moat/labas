@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'war'
+    id 'idea'
 }
 
 group 'com.labas'
@@ -25,7 +26,7 @@ tasks.withType(JavaCompile) {
 }
 
 dependencies {
-    compileOnly('jakarta.platform:jakarta.jakartaee-web-api:11.0.0')
+    compileOnly('jakarta.platform:jakarta.jakartaee-web-api:10.0.0')
     implementation('com.mysql:mysql-connector-j:8.3.0')
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")

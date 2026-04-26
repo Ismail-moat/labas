@@ -13,7 +13,7 @@ public class OrderItem {
     public OrderItem() {
     }
 
-    public OrderItem(Integer id, Integer quantity, BigDecimal amountExcl, BigDecimal amountIncl, 
+    public OrderItem(Integer id, Integer quantity, BigDecimal amountExcl, BigDecimal amountIncl,
                      Order order, Product product) {
         this.id = id;
         this.quantity = quantity;
@@ -71,3 +71,4 @@ public class OrderItem {
         this.product = product;
     }
 }
+

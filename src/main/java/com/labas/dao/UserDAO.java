@@ -23,7 +23,6 @@ public class UserDAO {
         return false;
     }
 
-
     public User login(String email, String password) {
 
         String sql = "SELECT * FROM users WHERE email = ? AND password = ?";
@@ -52,7 +51,6 @@ public class UserDAO {
 
         return null;
     }
-
 
     public int saveUser(User user) {
 
@@ -95,10 +93,10 @@ public class UserDAO {
         String sql = "SELECT * FROM users WHERE email = ?";
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
-            
+
             ps.setString(1, email);
             ResultSet rs = ps.executeQuery();
-            
+
             if (rs.next()) {
                 User user = new User();
                 user.setIdUser(rs.getInt("id"));
@@ -117,13 +115,13 @@ public class UserDAO {
         String sql = "UPDATE users SET email=?, password=? WHERE id=?";
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
-            
+
             ps.setString(1, user.getEmail());
             ps.setString(2, user.getPassword());
             ps.setInt(3, user.getIdUser());
-            
+
             return ps.executeUpdate() > 0;
-            
+
         } catch (SQLException e) {
             System.err.println("Erreur update user : " + e.getMessage());
         }

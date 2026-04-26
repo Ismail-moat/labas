@@ -3,7 +3,6 @@ package com.labas.service;
 import com.labas.dao.UserDAO;
 import com.labas.model.User;
 
-
 public class UserService {
 
     private UserDAO userDAO = new UserDAO();
@@ -17,3 +16,4 @@ public class UserService {
         return userDAO.countClients();
     }
 }
+

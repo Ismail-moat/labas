@@ -35,4 +35,9 @@ public class ProductService {
     public int getProductCount() {
         return productDAO.count();
     }
+
+    public List<Product> getTopSellingProducts(int limit) {
+        return productDAO.getTopSellingProducts(limit);
+    }
 }
+

@@ -16,7 +16,7 @@ public class Delivery {
     public Delivery() {
     }
 
-    public Delivery(Integer id, String address, String addressExtra, String zipCode, String city, 
+    public Delivery(Integer id, String address, String addressExtra, String zipCode, String city,
                     DeliveryStatus status, LocalDate estimatedDate, LocalDate deliveredDate, Order order) {
         this.id = id;
         this.address = address;
@@ -101,3 +101,4 @@ public class Delivery {
         this.order = order;
     }
 }
+
