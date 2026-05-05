@@ -48,6 +48,8 @@ public class LoginServlet extends HttpServlet {
                 session.setAttribute("address",   client.getAddress());
                 session.setAttribute("city",      client.getCity());
                 session.setAttribute("zipCode",   client.getZipCode());
+                session.setAttribute("clientId", client.getIdUser());
+            
             }
 
             response.sendRedirect(request.getContextPath() + "/pages/profile.jsp");

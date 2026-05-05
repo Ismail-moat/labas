@@ -17,7 +17,7 @@ public class ClientDAO {
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 Client c = new Client();
-                c.setIdUser(rs.getInt("user_id"));
+                c.setIdUser(rs.getInt("id"));
                 c.setFirstName(rs.getString("first_name"));
                 c.setLastName(rs.getString("last_name"));
                 c.setUsername(rs.getString("username"));
