@@ -5,6 +5,8 @@ import java.util.List;
 
 public class Client extends User {
 
+    private int id;
+
     private String firstName;
     private String lastName;
     private String username;
@@ -12,6 +14,7 @@ public class Client extends User {
     private String address;
     private String city;
     private String zipCode;
+    private String avatarUrl;
 
     private Cart cart;
     private List<Order> orders;
@@ -19,6 +22,14 @@ public class Client extends User {
 
     public Client() {
         super();
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getFirstName() {
@@ -77,6 +88,9 @@ public class Client extends User {
         this.zipCode = zipCode;
     }
 
+    public String getAvatarUrl() { return avatarUrl; }
+    public void setAvatarUrl(String avatarUrl) { this.avatarUrl = avatarUrl; }
+
     public Cart getCart() {
         return cart;
     }
@@ -101,4 +115,3 @@ public class Client extends User {
         this.reviews = reviews;
     }
 }
-

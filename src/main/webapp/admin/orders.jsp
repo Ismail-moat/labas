@@ -96,7 +96,12 @@
         </div>
     </div>
 </main>
-<form id="statusForm" action="${pageContext.request.contextPath}/admin/orders" method="POST" style="display:none;"><input type="hidden" name="action" value="updateStatus" /><input type="hidden" name="orderId" id="statusOrderId" /><input type="hidden" name="status" id="statusValue" /></form>
+<form id="statusForm" action="${pageContext.request.contextPath}/admin/orders" method="POST" style="display:none;">
+    <input type="hidden" name="action"      value="updateStatus" />
+    <input type="hidden" name="orderId"     id="statusOrderId" />
+    <input type="hidden" name="status"      id="statusValue" />
+    <input type="hidden" name="_csrf_token" value="${sessionScope._csrf_token}" />
+</form>
 <script>
     function updateStatus(orderId, newStatus) {
         if (confirm('Change order status to ' + newStatus.toUpperCase() + '?')) {

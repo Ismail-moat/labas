@@ -4,12 +4,13 @@ import com.labas.dao.ClientDAO;
 import com.labas.dao.UserDAO;
 import com.labas.model.Client;
 import com.labas.model.User;
+import com.labas.util.PasswordUtil;
 
 import java.util.List;
 
 public class ClientService {
-    private final ClientDAO clientDAO = new ClientDAO();
 
+    private final ClientDAO clientDAO = new ClientDAO();
     private final UserDAO userDAO = new UserDAO();
 
     public List<Client> getAllClients() {
@@ -26,13 +27,13 @@ public class ClientService {
             return -1;
         }
 
+        client.setPassword(PasswordUtil.hashPassword(client.getPassword()));
+
         int userId = userDAO.saveUser(client);
         if (userId > 0) {
             client.setIdUser(userId);
-
             return clientDAO.saveClient(client);
         }
         return -2;
     }
 }
-

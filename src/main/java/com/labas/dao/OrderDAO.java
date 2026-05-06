@@ -14,8 +14,6 @@ import java.util.List;
 
 public class OrderDAO {
 
-
-
     public int count() {
         String sql = "SELECT COUNT(*) FROM orders";
         try (Connection con = DBConnection.getConnection();
@@ -23,7 +21,7 @@ public class OrderDAO {
              ResultSet rs = ps.executeQuery()) {
             if (rs.next()) return rs.getInt(1);
         } catch (SQLException e) {
-            System.err.println("Erreur OrderDAO.count : " + e.getMessage());
+            System.err.println("OrderDAO.count: " + e.getMessage());
         }
         return 0;
     }
@@ -35,25 +33,27 @@ public class OrderDAO {
              ResultSet rs = ps.executeQuery()) {
             if (rs.next()) return rs.getDouble(1);
         } catch (SQLException e) {
-            System.err.println("Erreur OrderDAO.getTotalSales : " + e.getMessage());
+            System.err.println("OrderDAO.getTotalSales: " + e.getMessage());
         }
         return 0.0;
     }
 
     public List<OrderDTO> findRecent(int limit) {
-        return fetchOrders("SELECT o.id, c.first_name, c.last_name, u.email, o.created_at, o.total_excl, o.total_incl, o.status " +
-                           "FROM orders o " +
-                           "LEFT JOIN clients c ON o.client_id = c.id " +
-                           "LEFT JOIN users u ON c.user_id = u.id " +
-                           "ORDER BY o.created_at DESC LIMIT ?", limit);
+        return fetchOrders(
+            "SELECT o.id, c.first_name, c.last_name, u.email, o.created_at, o.total_excl, o.total_incl, o.status " +
+            "FROM orders o " +
+            "LEFT JOIN clients c ON o.client_id = c.id " +
+            "LEFT JOIN users u ON c.user_id = u.id " +
+            "ORDER BY o.created_at DESC LIMIT ?", limit);
     }
 
     public List<OrderDTO> findAllWithCustomerName() {
-        return fetchOrders("SELECT o.id, c.first_name, c.last_name, u.email, o.created_at, o.total_excl, o.total_incl, o.status " +
-                           "FROM orders o " +
-                           "LEFT JOIN clients c ON o.client_id = c.id " +
-                           "LEFT JOIN users u ON c.user_id = u.id " +
-                           "ORDER BY o.created_at DESC", null);
+        return fetchOrders(
+            "SELECT o.id, c.first_name, c.last_name, u.email, o.created_at, o.total_excl, o.total_incl, o.status " +
+            "FROM orders o " +
+            "LEFT JOIN clients c ON o.client_id = c.id " +
+            "LEFT JOIN users u ON c.user_id = u.id " +
+            "ORDER BY o.created_at DESC", null);
     }
 
     public boolean updateStatus(int orderId, String status) {
@@ -64,85 +64,53 @@ public class OrderDAO {
             ps.setInt(2, orderId);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.err.println("Erreur OrderDAO.updateStatus : " + e.getMessage());
+            System.err.println("OrderDAO.updateStatus: " + e.getMessage());
         }
         return false;
     }
 
-  
-    
-    
-    //salma
-
-    /** Create a new order and return its generated ID.
-     * clientId = the clients.id (not users.id)
-     */
-    
-    
-    public int createOrder(int clientId, BigDecimal totalExcl, BigDecimal totalIncl) {
+    public int createOrder(Connection con, int clientId, BigDecimal totalExcl, BigDecimal totalIncl)
+            throws SQLException {
         String sql = "INSERT INTO orders (client_id, total_excl, total_incl, status) VALUES (?, ?, ?, 'pending')";
-        try (Connection con = DBConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, clientId);
             ps.setBigDecimal(2, totalExcl);
             ps.setBigDecimal(3, totalIncl);
             ps.executeUpdate();
             ResultSet rs = ps.getGeneratedKeys();
             if (rs.next()) return rs.getInt(1);
-        } catch (SQLException e) {
-            System.err.println("OrderDAO.createOrder: " + e.getMessage());
         }
         return -1;
     }
 
-    //Add a single item line to an order.
-     
-    public boolean addOrderItem(int orderId, int productId, int quantity,
-                                 BigDecimal amountExcl, BigDecimal amountIncl) {
+    public boolean addOrderItem(Connection con, int orderId, int productId, int quantity,
+                                BigDecimal amountExcl, BigDecimal amountIncl) throws SQLException {
         String sql = "INSERT INTO order_item (order_id, product_id, quantity, amount_excl, amount_incl) " +
                      "VALUES (?, ?, ?, ?, ?)";
-        try (Connection con = DBConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, orderId);
             ps.setInt(2, productId);
             ps.setInt(3, quantity);
             ps.setBigDecimal(4, amountExcl);
             ps.setBigDecimal(5, amountIncl);
             return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
-            System.err.println("OrderDAO.addOrderItem: " + e.getMessage());
         }
-        return false;
     }
 
-  //reate a delivery record linked to an order
-    
-    public boolean createDelivery(int orderId, String address, String addressExtra,
-                                   String zipCode, String city) {
+    public boolean createDelivery(Connection con, int orderId, String address, String addressExtra,
+                                  String zipCode, String city) throws SQLException {
         String sql = "INSERT INTO delivery (order_id, address, address_extra, zip_code, city, status) " +
                      "VALUES (?, ?, ?, ?, ?, 'preparing')";
-        try (Connection con = DBConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, orderId);
             ps.setString(2, address);
             ps.setString(3, addressExtra);
             ps.setString(4, zipCode);
             ps.setString(5, city);
             return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
-            System.err.println("OrderDAO.createDelivery: " + e.getMessage());
         }
-        return false;
     }
-    
-    
-    
 
-    /**Get all orders for a specific client (order history).
- clientId = clients.id
-  */
-    
-    
     public List<Order> findByClientId(int clientId) {
         List<Order> orders = new ArrayList<>();
         String sql = "SELECT * FROM orders WHERE client_id = ? ORDER BY created_at DESC";
@@ -167,8 +135,6 @@ public class OrderDAO {
         return orders;
     }
 
-   //Get the clients.id (not users.id) for a given users.id.
-     
     public int getClientIdByUserId(int userId) {
         String sql = "SELECT id FROM clients WHERE user_id = ?";
         try (Connection con = DBConnection.getConnection();
@@ -181,11 +147,6 @@ public class OrderDAO {
         }
         return -1;
     }
-
-    
-    
-    
-    //PRIVATE HELPERS
 
     private List<OrderItem> findOrderItems(int orderId, Connection con) {
         List<OrderItem> items = new ArrayList<>();
@@ -224,7 +185,7 @@ public class OrderDAO {
                     dto.setId(rs.getInt("id"));
                     String firstName = rs.getString("first_name");
                     String lastName  = rs.getString("last_name");
-                    dto.setCustomerName(firstName != null ? firstName + " " + lastName : "Inconnu");
+                    dto.setCustomerName(firstName != null ? firstName + " " + lastName : "Unknown");
                     dto.setCustomerEmail(rs.getString("email"));
                     Timestamp ts = rs.getTimestamp("created_at");
                     if (ts != null) dto.setCreatedAt(ts);
@@ -235,7 +196,7 @@ public class OrderDAO {
                 }
             }
         } catch (SQLException e) {
-            System.err.println("Erreur OrderDAO.fetchOrders : " + e.getMessage());
+            System.err.println("OrderDAO.fetchOrders: " + e.getMessage());
         }
         return orders;
     }

@@ -11,7 +11,6 @@ import java.util.List;
 
 public class CartDAO {
 
-    // get or create the cart of a client
     public Cart getOrCreateCart(int clientId) {
         String sql = "SELECT * FROM cart WHERE client_id = ?";
         try (Connection con = DBConnection.getConnection();
@@ -28,7 +27,6 @@ public class CartDAO {
             System.err.println("CartDAO.getOrCreateCart select: " + e.getMessage());
         }
 
-        // new cart(create)
         String insert = "INSERT INTO cart (client_id) VALUES (?)";
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(insert, Statement.RETURN_GENERATED_KEYS)) {
@@ -47,17 +45,11 @@ public class CartDAO {
         return null;
     }
 
-    
-    
-    
-    
-    // get all items in a cart
     public List<CartItem> getCartItems(int cartId) {
         List<CartItem> items = new ArrayList<>();
         String sql = "SELECT ci.*, p.name, p.price, p.image_url, p.size, p.stock_qty " +
                      "FROM cart_item ci JOIN products p ON ci.product_id = p.id " +
                      "WHERE ci.cart_id = ?";
-        
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, cartId);
@@ -85,9 +77,21 @@ public class CartDAO {
         return items;
     }
 
-    // Add item to cart (or increase qty if alr exists)
     public boolean addItem(int cartId, int productId, int quantity) {
-        // Check if item already in cart
+        String stockSql = "SELECT stock_qty FROM products WHERE id = ?";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(stockSql)) {
+            ps.setInt(1, productId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                int available = rs.getInt("stock_qty");
+                if (available < quantity) return false; 
+            }
+        } catch (SQLException e) {
+            System.err.println("CartDAO.addItem stock check: " + e.getMessage());
+            return false;
+        }
+
         String check = "SELECT id, quantity FROM cart_item WHERE cart_id = ? AND product_id = ?";
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(check)) {
@@ -95,10 +99,6 @@ public class CartDAO {
             ps.setInt(2, productId);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-            	
-            	
-                // Update quantity
-            	
                 int newQty = rs.getInt("quantity") + quantity;
                 String update = "UPDATE cart_item SET quantity = ? WHERE id = ?";
                 try (PreparedStatement upd = con.prepareStatement(update)) {
@@ -111,8 +111,6 @@ public class CartDAO {
             System.err.println("CartDAO.addItem check: " + e.getMessage());
         }
 
-        
-        // Insert new item
         String sql = "INSERT INTO cart_item (cart_id, product_id, quantity, unit_price) " +
                      "VALUES (?, ?, ?, (SELECT price FROM products WHERE id = ?))";
         try (Connection con = DBConnection.getConnection();
@@ -128,15 +126,6 @@ public class CartDAO {
         return false;
     }
 
-    
-    
-    
-    
-    
-    
-    
-    
-    //uppdatee quantity of an item
     public boolean updateItemQuantity(int cartId, int productId, int quantity) {
         if (quantity <= 0) {
             return removeItem(cartId, productId);
@@ -154,8 +143,6 @@ public class CartDAO {
         return false;
     }
 
-    
-    //remove a single item
     public boolean removeItem(int cartId, int productId) {
         String sql = "DELETE FROM cart_item WHERE cart_id = ? AND product_id = ?";
         try (Connection con = DBConnection.getConnection();
@@ -169,9 +156,6 @@ public class CartDAO {
         return false;
     }
 
-    //clear all items from cart      (after checkout)
-    
-    
     public boolean clearCart(int cartId) {
         String sql = "DELETE FROM cart_item WHERE cart_id = ?";
         try (Connection con = DBConnection.getConnection();
@@ -185,19 +169,23 @@ public class CartDAO {
         return false;
     }
 
-    
-    // Get the client id from cart_id
+    public boolean clearCart(int cartId, Connection con) throws SQLException {
+        String sql = "DELETE FROM cart_item WHERE cart_id = ?";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, cartId);
+            ps.executeUpdate();
+            return true;
+        }
+    }
+
     public int getClientIdByCartId(int cartId) {
         String sql = "SELECT client_id FROM cart WHERE id = ?";
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, cartId);
             ResultSet rs = ps.executeQuery();
-            
             if (rs.next()) return rs.getInt("client_id");
-            
         } catch (SQLException e) {
-        	
             System.err.println("CartDAO.getClientIdByCartId: " + e.getMessage());
         }
         return -1;

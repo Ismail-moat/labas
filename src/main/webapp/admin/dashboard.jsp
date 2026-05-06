@@ -1,8 +1,6 @@
-<%--
-    Admin Dashboard — Labas E-Commerce
---%>
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%-- ── Guard : accès réservé aux admins connectés ── --%>
+
 <%
     HttpSession adminSession = request.getSession(false);
     if (adminSession == null || !"admin".equalsIgnoreCase((String) adminSession.getAttribute("role"))) {
@@ -24,7 +22,6 @@
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         body { display: flex; font-family: 'Montserrat', sans-serif; background: #f7f5f2; color: #1a1a1a; min-height: 100vh; }
 
-        /* sidebar */
         .sidebar { width: 220px; min-height: 100vh; background: #111; display: flex; flex-direction: column; padding: 2rem 1.5rem; flex-shrink: 0; }
         .sidebar-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; color: #fff; letter-spacing: .15em; margin-bottom: 2.5rem; }
         .sidebar-nav { display: flex; flex-direction: column; gap: .4rem; flex: 1; }
@@ -33,27 +30,24 @@
         .sidebar-footer a { color: #555; font-size: .72rem; text-decoration: none; }
         .sidebar-footer a:hover { color: #aaa; }
 
-        /* main */
         .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
         .header { padding: 1.6rem 2rem; background: #fff; border-bottom: 1px solid #e8e4de; display: flex; align-items: center; justify-content: space-between; }
         .header-title { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 600; }
         .header-user  { font-size: .78rem; color: #666; letter-spacing: .05em; }
         .content-scroll { padding: 2rem; overflow-y: auto; display: flex; flex-direction: column; gap: 2rem; }
 
-        /* stats */
         .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; }
         .stat-card { background: #fff; border: 1px solid #e8e4de; border-radius: 6px; padding: 1.4rem 1.6rem; }
         .stat-title { font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; color: #888; margin-bottom: .6rem; }
         .stat-value { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 600; }
 
-        /* table */
         .table-container { background: #fff; border: 1px solid #e8e4de; border-radius: 6px; overflow: hidden; }
         .table-header { padding: 1.2rem 1.6rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e8e4de; }
         .table-header h3 { font-size: .85rem; letter-spacing: .1em; text-transform: uppercase; font-weight: 500; }
         table { width: 100%; border-collapse: collapse; }
         thead th { padding: .8rem 1.2rem; text-align: left; font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: #888; border-bottom: 1px solid #e8e4de; font-weight: 500; }
         tbody td { padding: .9rem 1.2rem; font-size: .82rem; border-bottom: 1px solid #f0ede8; }
-        
+
         .status { display: inline-block; padding: .25rem .7rem; border-radius: 20px; font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; font-weight: 500; }
         .status.pending    { background: #fef3cd; color: #856404; }
         .status.confirmed  { background: #d1ecf1; color: #0c5460; }
@@ -65,7 +59,7 @@
         .btn-primary:hover { background: #333; }
 
         .empty-row td { text-align: center; color: #aaa; font-style: italic; padding: 2rem; }
-        
+
         .product-mini-img { width: 32px; height: 32px; object-fit: cover; border-radius: 4px; vertical-align: middle; margin-right: 10px; }
         .product-name-cell { display: flex; align-items: center; }
 
@@ -179,7 +173,7 @@
                                 <td class="product-name-cell">
                                     <c:choose>
                                         <c:when test="${not empty prod.imageUrl}">
-                                            <img src="${prod.imageUrl}" class="product-mini-img" alt="prod" />
+                                            <img src="${pageContext.request.contextPath}/${prod.imageUrl}" class="product-mini-img" alt="prod" />
                                         </c:when>
                                         <c:otherwise><div class="product-mini-img" style="background:#eee;"></div></c:otherwise>
                                     </c:choose>

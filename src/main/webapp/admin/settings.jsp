@@ -1,10 +1,4 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: moata
-  Date: 26/04/2026
-  Time: 11:11
-  To change this template use File | Settings | File Templates.
---%>
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!doctype html>
 <html lang="en">
@@ -12,7 +6,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Settings - Labas.</title>
-    <link rel="stylesheet" href="../css/admin.css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin.css" />
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
     <style>
         .form-group { margin-bottom: 20px; }
@@ -25,14 +19,14 @@
 <aside class="sidebar">
     <div class="sidebar-logo">labas. admin</div>
     <nav class="sidebar-nav">
-        <a href="dashboard.jsp">Dashboard</a>
-        <a href="products.jsp">Products</a>
-        <a href="orders.jsp">Orders</a>
+        <a href="${pageContext.request.contextPath}/admin/dashboard">Dashboard</a>
+        <a href="${pageContext.request.contextPath}/admin/products">Products</a>
+        <a href="${pageContext.request.contextPath}/admin/orders">Orders</a>
         <a href="${pageContext.request.contextPath}/admin/users">USERS</a>
-        <a href="settings.jsp" class="active">Settings</a>
+        <a href="${pageContext.request.contextPath}/admin/settings" class="active">Settings</a>
     </nav>
     <div class="sidebar-footer">
-        <a href="../index.html" style="color: #666; text-decoration: none;">&larr; Back to Store</a>
+        <a href="${pageContext.request.contextPath}/" style="color: #666; text-decoration: none;">&larr; Back to Store</a>
     </div>
 </aside>
 <main class="main-content">
@@ -61,7 +55,7 @@
         </div>
     </div>
 </main>
-<script src="../js/admin.js"></script>
+<script src="${pageContext.request.contextPath}/js/admin.js"></script>
 </body>
 </html>
 

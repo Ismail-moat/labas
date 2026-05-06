@@ -12,7 +12,7 @@
 </head>
 <body>
 <nav class="navbar" id="navbar">
-  <div class="nav-logo"><a href="${pageContext.request.contextPath}/index.html">labas.</a></div>
+  <div class="nav-logo"><a href="${pageContext.request.contextPath}/">labas.</a></div>
   <div class="nav-icons">
     <span class="nav-icon"><a href="${pageContext.request.contextPath}/cart">🛒 (${sessionScope.cartCount != null ? sessionScope.cartCount : 0})</a></span>
   </div>
@@ -28,12 +28,13 @@
   </div>
 
   <c:if test="${not empty error}">
-    <div style="color:red; text-align:center; margin-bottom:20px;">${error}</div>
+    <div style="color:red; text-align:center; margin-bottom:20px;"><c:out value="${error}"/></div>
   </c:if>
 
   <div class="checkout-layout">
     <div class="checkout-form-col">
       <form method="post" action="${pageContext.request.contextPath}/checkout">
+        <input type="hidden" name="_csrf_token" value="${sessionScope._csrf_token}" />
 
         <div class="form-section">
           <h3>CONTACT INFORMATION</h3>
@@ -122,10 +123,10 @@
 
     <div class="checkout-summary">
       <h3>YOUR ORDER</h3>
-      <c:forEach var="item" items="${cart.items}">
+          <c:forEach var="item" items="${cart.items}">
         <div class="summary-row small">
-          <span>${item.product.name} ×${item.quantity}</span>
-          <span><fmt:formatNumber value="${item.unitPrice.multiply(item.quantity)}" type="currency" currencySymbol="$"/></span>
+          <span><c:out value="${item.product.name}"/> ×<c:out value="${item.quantity}"/></span>
+          <span><fmt:formatNumber value="${item.unitPrice.multiply(item.quantity)}" type="currency" currencySymbol="€"/></span>
         </div>
       </c:forEach>
       <div class="divider"></div>

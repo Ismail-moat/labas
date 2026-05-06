@@ -6,10 +6,20 @@ build/
 .kotlin
 
 ### IntelliJ IDEA ###
-.idea/modules.xml
-.idea/jarRepositories.xml
-.idea/compiler.xml
-.idea/libraries/
+# Default ignored files
+/shelf/
+/workspace.xml
+# Editor-based HTTP Client requests
+
+# ── Security: never commit real DB credentials ──────────────────────────────
+# Copy web.xml.template → web.xml and fill in your own credentials locally
+src/main/webapp/WEB-INF/web.xml
+
+# Build outputs
+build/
+out/
+*.class
+*.war/
 *.iws
 *.iml
 *.ipr

@@ -6,22 +6,71 @@
 
     <context-param>
         <param-name>dbUrl</param-name>
-        <param-value>jdbc:mysql://localhost:3306/labas_db</param-value>
+        <param-value>jdbc:mysql://localhost:3306/labas_db?useSSL=false&amp;serverTimezone=UTC&amp;allowPublicKeyRetrieval=true</param-value>
     </context-param>
-
     <context-param>
         <param-name>dbUser</param-name>
         <param-value>root</param-value>
     </context-param>
-
     <context-param>
         <param-name>dbPassword</param-name>
         <param-value>Shadow=0hacker</param-value>
     </context-param>
-
     <context-param>
         <param-name>dbDriver</param-name>
         <param-value>com.mysql.cj.jdbc.Driver</param-value>
     </context-param>
+
+    <context-param>
+        <param-name>uploadDir</param-name>
+        <param-value>/uploads</param-value>
+    </context-param>
+
+    <session-config>
+        <session-timeout>30</session-timeout>
+        <cookie-config>
+            <http-only>true</http-only>
+            <secure>false</secure>
+        </cookie-config>
+        <tracking-mode>COOKIE</tracking-mode>
+    </session-config>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Block Direct JSP Access</web-resource-name>
+            <url-pattern>/pages/*</url-pattern>
+            <url-pattern>/admin/*.jsp</url-pattern>
+        </web-resource-collection>
+        <auth-constraint/>
+    </security-constraint>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Block Utility Pages</web-resource-name>
+            <url-pattern>/pages/UpdateDB.jsp</url-pattern>
+        </web-resource-collection>
+        <auth-constraint/>
+    </security-constraint>
+
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+
+    <error-page>
+        <error-code>403</error-code>
+        <location>/error403.jsp</location>
+    </error-page>
+    <error-page>
+        <error-code>404</error-code>
+        <location>/error404.jsp</location>
+    </error-page>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/error500.jsp</location>
+    </error-page>
+    <error-page>
+        <exception-type>java.lang.Throwable</exception-type>
+        <location>/error500.jsp</location>
+    </error-page>
 
 </web-app>

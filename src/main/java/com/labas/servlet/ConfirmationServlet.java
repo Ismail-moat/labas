@@ -21,22 +21,13 @@ public class ConfirmationServlet extends HttpServlet {
 
         Integer orderId = (Integer) session.getAttribute("lastOrderId");
         if (orderId == null) {
-        	
-        	
-        	
-        	
-        	
-            // No order was just placed, redirect to home
-        	
+
             response.sendRedirect(request.getContextPath() + "/");
             return;
         }
-        
 
         request.setAttribute("orderId", orderId);
-        
-        // clear so refreshing doesn't re-show confirmation
-        
+
         session.removeAttribute("lastOrderId");
         request.getRequestDispatcher("/pages/confirmation.jsp").forward(request, response);
     }

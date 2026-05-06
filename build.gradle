@@ -34,6 +34,10 @@ dependencies {
 
     implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0'
     implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1'
+    implementation 'org.mindrot:jbcrypt:0.4'
+
+    // Jakarta Mail for order confirmation emails
+    implementation 'com.sun.mail:jakarta.mail:2.0.1'
 
 }
 

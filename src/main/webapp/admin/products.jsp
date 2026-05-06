@@ -99,7 +99,7 @@
                     <c:when test="${not empty products}">
                         <c:forEach var="product" items="${products}">
                             <tr>
-                                <td><img src="${product.imageUrl}" class="product-img" onerror="this.style.display='none'"/></td>
+                                <td><img src="${pageContext.request.contextPath}/${product.imageUrl}" class="product-img" onerror="this.style.display='none'"/></td>
                                 <td><c:out value="${product.name}" /></td>
                                 <td><fmt:formatNumber value="${product.price}" pattern="#,##0.00" /> dh</td>
                                 <td><c:out value="${product.stockQty}" /></td>
@@ -121,8 +121,11 @@
 <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
 <div class="drawer" id="productDrawer">
     <div class="drawer-head"><span class="drawer-head-title" id="drawerTitle">New Product</span><button class="drawer-close" onclick="closeDrawer()">&times;</button></div>
-    <form id="productForm" action="${pageContext.request.contextPath}/admin/products" method="POST">
-        <input type="hidden" name="action" value="save" /><input type="hidden" id="pId" name="id" />
+    <form id="productForm" action="${pageContext.request.contextPath}/admin/products"
+          method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="action" value="save" />
+        <input type="hidden" id="pId" name="id" />
+        <input type="hidden" name="_csrf_token" value="${sessionScope._csrf_token}" />
         <div class="drawer-body">
             <div class="form-section-label">Product Info</div>
             <div class="field"><label>Name *</label><input type="text" id="pName" name="name" required /></div>
@@ -139,7 +142,14 @@
                 </div>
             </div>
             <div class="form-section-label">Image</div>
-            <div class="field"><label>Image URL</label><input type="url" id="pImageUrl" name="imageUrl" oninput="previewImage(this.value)" /></div>
+            <div class="field">
+                <label>Upload Image (JPEG/PNG/WebP, max 5 Mo)</label>
+                <input type="file" id="pImageFile" name="productImage" accept="image/jpeg,image/png,image/webp" />
+            </div>
+            <div class="field">
+                <label>Or Image URL (si pas d'upload)</label>
+                <input type="url" id="pImageUrl" name="imageUrl" oninput="previewImage(this.value)" />
+            </div>
             <div class="img-preview" id="imgPreview"><img id="imgPreviewEl" src="" /><span id="imgPlaceholder">Preview</span></div>
             <div class="form-section-label">Category</div>
             <div class="field"><label>Category *</label>
@@ -153,7 +163,11 @@
         <div class="drawer-foot"><button type="button" class="btn-ghost" onclick="closeDrawer()">Cancel</button><button type="submit" class="btn-primary">Save Product</button></div>
     </form>
 </div>
-<form id="deleteForm" action="${pageContext.request.contextPath}/admin/products" method="POST" style="display:none;"><input type="hidden" name="action" value="delete" /><input type="hidden" name="id" id="deleteId" /></form>
+<form id="deleteForm" action="${pageContext.request.contextPath}/admin/products" method="POST" style="display:none;">
+    <input type="hidden" name="action" value="delete" />
+    <input type="hidden" name="id" id="deleteId" />
+    <input type="hidden" name="_csrf_token" value="${sessionScope._csrf_token}" />
+</form>
 <script>
     const categorySubMap = {}; <c:forEach var="cat" items="${categories}">categorySubMap["${cat.id}"] = [<c:forEach var="sub" items="${cat.subcategories}" varStatus="vs">{ id: "${sub.id}", name: "${sub.name}" }<c:if test="${!vs.last}">,</c:if></c:forEach>];</c:forEach>
     function openDrawer(isEdit = false) { document.getElementById('drawerTitle').textContent = isEdit ? 'Edit Product' : 'New Product'; if (!isEdit) { document.getElementById('productForm').reset(); document.getElementById('pId').value = ''; document.getElementById('imgPreviewEl').style.display = 'none'; document.querySelectorAll('.size-pill').forEach(p => p.classList.remove('selected')); } document.getElementById('drawerOverlay').classList.add('open'); document.getElementById('productDrawer').classList.add('open'); }

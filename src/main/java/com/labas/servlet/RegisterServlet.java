@@ -2,6 +2,9 @@ package com.labas.servlet;
 
 import com.labas.model.Client;
 import com.labas.service.ClientService;
+import com.labas.util.AuditLogger;
+import com.labas.util.CsrfUtil;
+import com.labas.util.PasswordUtil;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -12,11 +15,17 @@ import java.io.IOException;
 @WebServlet("/register")
 public class RegisterServlet extends HttpServlet {
 
-    private ClientService clientService = new ClientService();
+    private final ClientService clientService = new ClientService();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
+
+        if (!CsrfUtil.isValid(request)) {
+            request.setAttribute("erreur", "Requête invalide. Veuillez réessayer.");
+            request.getRequestDispatcher("/pages/register.jsp").forward(request, response);
+            return;
+        }
 
         String email     = request.getParameter("email");
         String password  = request.getParameter("password");
@@ -28,24 +37,43 @@ public class RegisterServlet extends HttpServlet {
         String city      = request.getParameter("city");
         String zipCode   = request.getParameter("zipCode");
 
+        if (email == null || email.isBlank() || !email.matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")) {
+            request.setAttribute("erreur", "Adresse email invalide.");
+            request.getRequestDispatcher("/pages/register.jsp").forward(request, response);
+            return;
+        }
+
+        String policyError = PasswordUtil.validatePolicy(password);
+        if (policyError != null) {
+            request.setAttribute("erreur", policyError);
+            request.getRequestDispatcher("/pages/register.jsp").forward(request, response);
+            return;
+        }
+
         Client client = new Client();
-        client.setEmail(email);
+        client.setEmail(email.trim().toLowerCase());
         client.setPassword(password);
         client.setRole("client");
-        client.setFirstName(firstName);
-        client.setLastName(lastName);
-        client.setUsername(username);
-        client.setPhone(phone);
-        client.setAddress(address);
-        client.setCity(city);
-        client.setZipCode(zipCode);
+        client.setFirstName(firstName != null ? firstName.trim() : "");
+        client.setLastName(lastName  != null ? lastName.trim()  : "");
+        client.setUsername(username  != null ? username.trim()  : "");
+        client.setPhone(phone        != null ? phone.trim()     : "");
+        client.setAddress(address    != null ? address.trim()   : "");
+        client.setCity(city          != null ? city.trim()      : "");
+        client.setZipCode(zipCode    != null ? zipCode.trim()   : "");
 
         int resultat = clientService.inscrireClient(client);
 
         if (resultat > 0) {
-            response.sendRedirect(request.getContextPath() + "/pages/login.jsp?succes=1");
-        } else {
+            AuditLogger.logRegistration(email, getClientIp(request));
+
+            CsrfUtil.rotate(request.getSession(true));
+            response.sendRedirect(request.getContextPath() + "/login?succes=1");
+        } else if (resultat == -1) {
             request.setAttribute("erreur", "Cet email est déjà utilisé. Veuillez vous connecter.");
+            request.getRequestDispatcher("/pages/register.jsp").forward(request, response);
+        } else {
+            request.setAttribute("erreur", "Une erreur est survenue. Veuillez réessayer.");
             request.getRequestDispatcher("/pages/register.jsp").forward(request, response);
         }
     }
@@ -53,6 +81,14 @@ public class RegisterServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
+
+        CsrfUtil.getToken(request.getSession(true));
         request.getRequestDispatcher("/pages/register.jsp").forward(request, response);
+    }
+
+    private String getClientIp(HttpServletRequest request) {
+        String ip = request.getHeader("X-Forwarded-For");
+        if (ip != null && !ip.isBlank()) return ip.split(",")[0].trim();
+        return request.getRemoteAddr();
     }
 }

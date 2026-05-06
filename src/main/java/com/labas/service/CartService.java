@@ -1,18 +1,14 @@
 package com.labas.service;
 
 import com.labas.dao.CartDAO;
-import com.labas.dao.OrderDAO;
 import com.labas.model.Cart;
 import com.labas.model.CartItem;
 
 import java.math.BigDecimal;
-import java.util.List;
-
 
 public class CartService {
 
     private final CartDAO cartDAO = new CartDAO();
-    private final OrderDAO orderDAO = new OrderDAO();
 
     public Cart getOrCreateCart(int clientId) {
         return cartDAO.getOrCreateCart(clientId);
@@ -52,7 +48,9 @@ public class CartService {
         if (cart == null || cart.getItems() == null) return BigDecimal.ZERO;
         BigDecimal total = BigDecimal.ZERO;
         for (CartItem item : cart.getItems()) {
-            total = total.add(item.getUnitPrice().multiply(new BigDecimal(item.getQuantity())));
+            if (item.getUnitPrice() != null) {
+                total = total.add(item.getUnitPrice().multiply(new BigDecimal(item.getQuantity())));
+            }
         }
         return total;
     }

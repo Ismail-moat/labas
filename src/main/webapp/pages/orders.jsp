@@ -28,9 +28,9 @@
 </head>
 <body>
 <nav class="navbar" id="navbar">
-  <div class="nav-logo"><a href="${pageContext.request.contextPath}/index.html">labas.</a></div>
+  <div class="nav-logo"><a href="${pageContext.request.contextPath}/">labas.</a></div>
   <ul class="nav-links">
-    <li><a href="${pageContext.request.contextPath}/pages/catalog.html">SHOP</a></li>
+    <li><a href="${pageContext.request.contextPath}/catalog">SHOP</a></li>
   </ul>
   <div class="nav-icons">
     <span class="nav-icon"><a href="${pageContext.request.contextPath}/cart">🛒 (${sessionScope.cartCount != null ? sessionScope.cartCount : 0})</a></span>
@@ -40,7 +40,7 @@
 </nav>
 
 <div class="breadcrumb">
-  <a href="${pageContext.request.contextPath}/index.html">Home</a> /
+  <a href="${pageContext.request.contextPath}/">Home</a> /
   <a href="${pageContext.request.contextPath}/profile">Profile</a> /
   <span>My Orders</span>
 </div>
@@ -52,7 +52,7 @@
     <c:when test="${empty orders}">
       <div style="text-align:center; padding: 60px 0; color: var(--grey);">
         <p style="font-size:16px; margin-bottom:24px;">You haven't placed any orders yet.</p>
-        <a href="${pageContext.request.contextPath}/pages/catalog.html" class="btn-add-cart">START SHOPPING</a>
+        <a href="${pageContext.request.contextPath}/catalog" class="btn-add-cart">START SHOPPING</a>
       </div>
     </c:when>
     <c:otherwise>

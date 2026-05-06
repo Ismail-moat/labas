@@ -11,9 +11,9 @@
 </head>
 <body>
 <nav class="navbar" id="navbar">
-  <div class="nav-logo"><a href="${pageContext.request.contextPath}/index.html">labas.</a></div>
+  <div class="nav-logo"><a href="${pageContext.request.contextPath}/">labas.</a></div>
   <div class="nav-icons">
-    <span class="nav-icon"><a href="${pageContext.request.contextPath}/pages/catalog.html">CONTINUE SHOPPING</a></span>
+    <span class="nav-icon"><a href="${pageContext.request.contextPath}/catalog">CONTINUE SHOPPING</a></span>
   </div>
 </nav>
 
@@ -48,7 +48,7 @@
     </div>
 
     <div class="confirm-actions">
-      <a href="${pageContext.request.contextPath}/pages/catalog.html" class="btn-add-cart">CONTINUE SHOPPING</a>
+      <a href="${pageContext.request.contextPath}/catalog" class="btn-add-cart">CONTINUE SHOPPING</a>
       <a href="${pageContext.request.contextPath}/orders" class="btn-outline dark">VIEW MY ORDERS</a>
     </div>
   </div>

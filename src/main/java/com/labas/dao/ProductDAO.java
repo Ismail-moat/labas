@@ -139,7 +139,7 @@ public class ProductDAO {
         List<Product> products = new ArrayList<>();
         String sql = "SELECT p.*, SUM(oi.quantity) as total_sold " +
                      "FROM products p " +
-                     "JOIN order_item oi ON p.id = oi.product_id " +
+                     "LEFT JOIN order_item oi ON p.id = oi.product_id " +
                      "GROUP BY p.id " +
                      "ORDER BY total_sold DESC " +
                      "LIMIT ?";
@@ -149,11 +149,7 @@ public class ProductDAO {
             ps.setInt(1, limit);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    Product p = new Product();
-                    p.setId(rs.getInt("id"));
-                    p.setName(rs.getString("name"));
-                    p.setPrice(rs.getBigDecimal("price"));
-                    p.setImageUrl(rs.getString("image_url"));
+                    Product p = mapRowToProduct(rs);
                     products.add(p);
                 }
             }
@@ -161,6 +157,57 @@ public class ProductDAO {
             System.err.println("Erreur ProductDAO.getTopSellingProducts : " + e.getMessage());
         }
         return products;
+    }
+
+    public List<Product> findByCategory(int categoryId) {
+        List<Product> products = new ArrayList<>();
+        String sql = "SELECT * FROM products WHERE category_id = ? ORDER BY id DESC";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, categoryId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    products.add(mapRowToProduct(rs));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur ProductDAO.findByCategory : " + e.getMessage());
+        }
+        return products;
+    }
+
+    public List<Product> search(String query) {
+        List<Product> products = new ArrayList<>();
+        String sql = "SELECT * FROM products WHERE name LIKE ? OR description LIKE ? ORDER BY id DESC";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            String pattern = "%" + query + "%";
+            ps.setString(1, pattern);
+            ps.setString(2, pattern);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    products.add(mapRowToProduct(rs));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur ProductDAO.search : " + e.getMessage());
+        }
+        return products;
+    }
+
+    private Product mapRowToProduct(ResultSet rs) throws SQLException {
+        Product p = new Product();
+        p.setId(rs.getInt("id"));
+        p.setName(rs.getString("name"));
+        p.setDescription(rs.getString("description"));
+        p.setPrice(rs.getBigDecimal("price"));
+        p.setVatRate(rs.getBigDecimal("vat_rate"));
+        p.setImageUrl(rs.getString("image_url"));
+        p.setStockQty(rs.getInt("stock_qty"));
+        p.setSize(rs.getString("size"));
+        p.setCategoryId(rs.getObject("category_id") != null ? rs.getInt("category_id") : null);
+        p.setSubcategoryId(rs.getObject("subcategory_id") != null ? rs.getInt("subcategory_id") : null);
+        return p;
     }
 }
 

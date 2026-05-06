@@ -16,26 +16,17 @@ public class ClientDAO {
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                Client c = new Client();
-                c.setIdUser(rs.getInt("id"));
-                c.setFirstName(rs.getString("first_name"));
-                c.setLastName(rs.getString("last_name"));
-                c.setUsername(rs.getString("username"));
-                c.setPhone(rs.getString("phone"));
-                c.setAddress(rs.getString("address"));
-                c.setCity(rs.getString("city"));
-                c.setZipCode(rs.getString("zip_code"));
-                clients.add(c);
+                clients.add(mapRow(rs));
             }
         } catch (SQLException e) {
-            System.err.println("Erreur ClientDAO.findAll : " + e.getMessage());
+            System.err.println("ClientDAO.findAll: " + e.getMessage());
         }
         return clients;
     }
 
     public int saveClient(Client client) {
-        String sql = "INSERT INTO clients(user_id, first_name, last_name, username, phone, address, city, zip_code) "
-                   + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO clients(user_id, first_name, last_name, username, phone, address, city, zip_code, avatar_url) "
+                   + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, client.getIdUser());
@@ -46,11 +37,12 @@ public class ClientDAO {
             ps.setString(6, client.getAddress());
             ps.setString(7, client.getCity());
             ps.setString(8, client.getZipCode());
+            ps.setString(9, client.getAvatarUrl());
             ps.executeUpdate();
             ResultSet rs = ps.getGeneratedKeys();
             if (rs.next()) return rs.getInt(1);
         } catch (SQLException e) {
-            System.err.println("Erreur saveClient : " + e.getMessage());
+            System.err.println("ClientDAO.saveClient: " + e.getMessage());
         }
         return -1;
     }
@@ -62,25 +54,17 @@ public class ClientDAO {
             ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                Client c = new Client();
-                c.setIdUser(rs.getInt("user_id"));
-                c.setFirstName(rs.getString("first_name"));
-                c.setLastName(rs.getString("last_name"));
-                c.setUsername(rs.getString("username"));
-                c.setPhone(rs.getString("phone"));
-                c.setAddress(rs.getString("address"));
-                c.setCity(rs.getString("city"));
-                c.setZipCode(rs.getString("zip_code"));
-                return c;
+                return mapRow(rs);
             }
         } catch (SQLException e) {
-            System.err.println("Erreur findByUserId : " + e.getMessage());
+            System.err.println("ClientDAO.findByUserId: " + e.getMessage());
         }
         return null;
     }
 
     public boolean update(Client client) {
         String sql = "UPDATE clients SET first_name=?, last_name=?, username=?, phone=?, address=?, city=?, zip_code=? "
+                   + ", avatar_url=COALESCE(?, avatar_url) "
                    + "WHERE user_id=?";
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -91,11 +75,27 @@ public class ClientDAO {
             ps.setString(5, client.getAddress());
             ps.setString(6, client.getCity());
             ps.setString(7, client.getZipCode());
-            ps.setInt(8, client.getIdUser());
+            ps.setString(8, client.getAvatarUrl()); 
+            ps.setInt(9, client.getIdUser());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.err.println("Erreur update client : " + e.getMessage());
+            System.err.println("ClientDAO.update: " + e.getMessage());
         }
         return false;
+    }
+
+    private Client mapRow(ResultSet rs) throws SQLException {
+        Client c = new Client();
+        c.setId(rs.getInt("id"));           
+        c.setIdUser(rs.getInt("user_id"));  
+        c.setFirstName(rs.getString("first_name"));
+        c.setLastName(rs.getString("last_name"));
+        c.setUsername(rs.getString("username"));
+        c.setPhone(rs.getString("phone"));
+        c.setAddress(rs.getString("address"));
+        c.setCity(rs.getString("city"));
+        c.setZipCode(rs.getString("zip_code"));
+        try { c.setAvatarUrl(rs.getString("avatar_url")); } catch (SQLException ignored) {}
+        return c;
     }
 }

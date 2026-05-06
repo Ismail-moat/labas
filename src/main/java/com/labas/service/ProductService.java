@@ -39,5 +39,13 @@ public class ProductService {
     public List<Product> getTopSellingProducts(int limit) {
         return productDAO.getTopSellingProducts(limit);
     }
+
+    public List<Product> getProductsByCategory(int categoryId) {
+        return productDAO.findByCategory(categoryId);
+    }
+
+    public List<Product> searchProducts(String query) {
+        return productDAO.search(query);
+    }
 }
 
