@@ -26,9 +26,6 @@ CREATE TABLE users (
                        UNIQUE KEY uk_users_email (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Default admin
-INSERT INTO users (id, email, password, role, created_at)
-VALUES (1, 'admin@shop.com', '123456', 'admin', NOW());
 
 -- ============================================================
 -- Table: clients
