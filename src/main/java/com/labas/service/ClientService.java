@@ -24,7 +24,10 @@ public class ClientService {
 
     public int inscrireClient(Client client) {
         if (userDAO.emailExiste(client.getEmail())) {
-            return -1;
+            return -1; // Email existe déjà
+        }
+        if (clientDAO.usernameExiste(client.getUsername())) {
+            return -2; // Username existe déjà
         }
 
         client.setPassword(PasswordUtil.hashPassword(client.getPassword()));
@@ -32,8 +35,9 @@ public class ClientService {
         int userId = userDAO.saveUser(client);
         if (userId > 0) {
             client.setIdUser(userId);
-            return clientDAO.saveClient(client);
+            int clientResult = clientDAO.saveClient(client);
+            return (clientResult > 0) ? 1 : -3; // 1 = Succès, -3 = Erreur DB Client
         }
-        return -2;
+        return -3; // Erreur DB User
     }
 }

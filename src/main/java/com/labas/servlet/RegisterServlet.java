@@ -64,7 +64,7 @@ public class RegisterServlet extends HttpServlet {
 
         int resultat = clientService.inscrireClient(client);
 
-        if (resultat > 0) {
+        if (resultat == 1) {
             AuditLogger.logRegistration(email, getClientIp(request));
 
             CsrfUtil.rotate(request.getSession(true));
@@ -72,8 +72,11 @@ public class RegisterServlet extends HttpServlet {
         } else if (resultat == -1) {
             request.setAttribute("erreur", "Cet email est déjà utilisé. Veuillez vous connecter.");
             request.getRequestDispatcher("/pages/register.jsp").forward(request, response);
+        } else if (resultat == -2) {
+            request.setAttribute("erreur", "Ce nom d'utilisateur est déjà utilisé.");
+            request.getRequestDispatcher("/pages/register.jsp").forward(request, response);
         } else {
-            request.setAttribute("erreur", "Une erreur est survenue. Veuillez réessayer.");
+            request.setAttribute("erreur", "Une erreur technique est survenue. Veuillez réessayer.");
             request.getRequestDispatcher("/pages/register.jsp").forward(request, response);
         }
     }

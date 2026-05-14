@@ -76,10 +76,15 @@ public class AdminProductsServlet extends HttpServlet {
 
             try {
                 p.setPrice(new BigDecimal(priceStr));
-                p.setVatRate(new BigDecimal(request.getParameter("vatRate") != null ? request.getParameter("vatRate") : "0.20"));
+                String vatStr = request.getParameter("vatRate");
+                if (vatStr == null || vatStr.isBlank()) {
+                    p.setVatRate(new BigDecimal("20.00"));
+                } else {
+                    p.setVatRate(new BigDecimal(vatStr));
+                }
                 p.setStockQty(Integer.parseInt(stockStr));
             } catch (NumberFormatException e) {
-                request.setAttribute("error", "Valeurs numériques invalides.");
+                request.setAttribute("error", "Valeurs numériques invalides (Prix, TVA ou Stock).");
                 doGet(request, response);
                 return;
             }

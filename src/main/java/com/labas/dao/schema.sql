@@ -41,6 +41,7 @@ CREATE TABLE clients (
                          address    VARCHAR(100) DEFAULT NULL,
                          city       VARCHAR(50) DEFAULT NULL,
                          zip_code   VARCHAR(10) DEFAULT NULL,
+                         avatar_url VARCHAR(255) DEFAULT NULL,
                          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                          PRIMARY KEY (id),

@@ -9,6 +9,19 @@ import java.util.List;
 
 public class ClientDAO {
 
+    public boolean usernameExiste(String username) {
+        String sql = "SELECT id FROM clients WHERE username = ?";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, username);
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            System.err.println("ClientDAO.usernameExiste: " + e.getMessage());
+        }
+        return false;
+    }
+
     public List<Client> findAll() {
         List<Client> clients = new ArrayList<>();
         String sql = "SELECT * FROM clients ORDER BY last_name, first_name";
@@ -42,7 +55,8 @@ public class ClientDAO {
             ResultSet rs = ps.getGeneratedKeys();
             if (rs.next()) return rs.getInt(1);
         } catch (SQLException e) {
-            System.err.println("ClientDAO.saveClient: " + e.getMessage());
+            System.err.println("ClientDAO.saveClient ERROR: " + e.getMessage());
+            e.printStackTrace();
         }
         return -1;
     }

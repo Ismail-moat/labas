@@ -61,8 +61,9 @@
         .size-pills { display: flex; flex-wrap: wrap; gap: .4rem; }
         .size-pill { padding: .3rem .75rem; border: 1px solid #e8e4de; border-radius: 30px; font-size: .72rem; cursor: pointer; background: #faf9f7; }
         .size-pill.selected { background: #111; color: #fff; }
-        .drawer-foot { padding: 1.2rem 2rem; border-top: 1px solid #e8e4de; display: flex; gap: .75rem; }
+        .drawer-foot { padding: 1.2rem 2rem; border-top: 1px solid #e8e4de; display: flex; gap: .75rem; background: #fff; }
         .btn-ghost { flex: 1; padding: .7rem; font-size: .73rem; text-transform: uppercase; background: none; border: 1px solid #e8e4de; border-radius: 3px; cursor: pointer; color: #666; }
+        #productForm { display: flex; flex-direction: column; height: 100%; overflow: hidden; }
     </style>
 </head>
 <body>
@@ -153,10 +154,22 @@
             <div class="img-preview" id="imgPreview"><img id="imgPreviewEl" src="" /><span id="imgPlaceholder">Preview</span></div>
             <div class="form-section-label">Category</div>
             <div class="field"><label>Category *</label>
-                <select id="pCategory" name="categoryId" onchange="updateSubcategories()" required>
-                    <option value="">— Select —</option>
-                    <c:forEach var="cat" items="${categories}"><option value="${cat.id}"><c:out value="${cat.name}" /></option></c:forEach>
-                </select>
+                <c:choose>
+                    <c:when test="${not empty categories}">
+                        <select id="pCategory" name="categoryId" onchange="updateSubcategories()" required>
+                            <option value="">— Select —</option>
+                            <c:forEach var="cat" items="${categories}">
+                                <option value="${cat.id}"><c:out value="${cat.name}" /></option>
+                            </c:forEach>
+                        </select>
+                    </c:when>
+                    <c:otherwise>
+                        <div style="color: #b91c1c; font-size: 0.75rem; padding: 0.5rem; background: #fef2f2; border: 1px solid #fee2e2; border-radius: 4px;">
+                            No categories found. <a href="${pageContext.request.contextPath}/admin/categories" style="color: #b91c1c; font-weight: 600;">Create one first.</a>
+                        </div>
+                        <input type="hidden" name="categoryId" value="" required />
+                    </c:otherwise>
+                </c:choose>
             </div>
             <div class="field"><label>Subcategory</label><select id="pSubcategory" name="subcategoryId"><option value="">— Select category first —</option></select></div>
         </div>
