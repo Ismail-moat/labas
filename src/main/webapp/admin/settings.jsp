@@ -36,6 +36,9 @@
     </header>
     <div class="content-scroll">
         <div class="card">
+            <c:if test="${not empty success}"><div style="padding: 1rem; background: #ecfdf5; color: #065f46; border-radius: 4px; margin-bottom: 1.5rem; font-size: 0.85rem;">${success}</div></c:if>
+            <c:if test="${not empty error}"><div style="padding: 1rem; background: #fef2f2; color: #991b1b; border-radius: 4px; margin-bottom: 1.5rem; font-size: 0.85rem;">${error}</div></c:if>
+
             <h3 style="margin-bottom: 24px; font-size: 16px; font-weight: 500;">General Information</h3>
             <form onsubmit="event.preventDefault(); alert('Settings Saved!');">
                 <div class="form-group">
@@ -51,6 +54,23 @@
                     <input type="text" value="MAD (dh)" />
                 </div>
                 <button class="btn-primary" type="submit">Save Changes</button>
+            </form>
+        </div>
+
+        <div class="card" style="margin-top: 2rem;">
+            <h3 style="margin-bottom: 24px; font-size: 16px; font-weight: 500;">Admin Security</h3>
+            <form action="${pageContext.request.contextPath}/admin/settings" method="POST">
+                <input type="hidden" name="action" value="security" />
+                <input type="hidden" name="_csrf_token" value="${sessionScope._csrf_token}" />
+                <div class="form-group">
+                    <label>Admin Email</label>
+                    <input type="email" name="email" value="${sessionScope.email}" required />
+                </div>
+                <div class="form-group">
+                    <label>New Password (leave blank to keep current)</label>
+                    <input type="password" name="password" placeholder="••••••••" />
+                </div>
+                <button class="btn-primary" type="submit">Update Security</button>
             </form>
         </div>
     </div>
